@@ -5,7 +5,7 @@
 1. **Colores del proyecto:**
    - **Principal:** `#21948A`
    - **Complementario:** `#94212B`
-2. **El color dominante es el blanco.** El fondo de las páginas es blanco (nada de fondos verde agua). El verde agua es el color principal **para los detalles**: botones, marcadores, bordes finos, etiquetas, gotas. Se usa con intención, sin abusar de él.
+2. **El color dominante es el blanco.** El fondo de las páginas es blanco (nada de fondos verde agua). **No hay modo noche**: la web se ve siempre en claro aunque el dispositivo esté en modo oscuro (`color-scheme: light`). El verde agua es el color principal **para los detalles**: botones, marcadores, bordes finos, etiquetas, gotas. Se usa con intención, sin abusar de él.
 3. **Usar más el principal y sus variaciones** (tonos claros y oscuros de `#21948A`) que el complementario. El complementario es un acento: se usa poco y con intención (corazones, lo que es de la pareja, errores). Nunca como color de fondo grande.
 4. **Las gotas de agua son la seña de identidad y se mantienen siempre.** Los marcadores y detalles tienen forma de gota: puntos de la línea de tiempo, el indicador de "¡Guardado!", la espera de la respuesta de la pareja, las gotas que caen en el fondo, el favicon, el logo. Cualquier marcador o detalle nuevo debe seguir este concepto antes que usar círculos, viñetas o iconos genéricos.
 5. El diseño debe transmitir **tranquilidad, suavidad y algo "lindo"**: esquinas redondeadas, sombras suaves, mucho espacio, movimientos lentos y discretos.

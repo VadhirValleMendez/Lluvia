@@ -2,6 +2,7 @@
    Lluvia — "una tarde de lluvia tranquila"
    Colores: principal #21948A (agua) y complementario #94212B (rubí).
    Se usa mucho más el agua; el rubí es solo un acento.
+   Siempre en claro: no hay modo noche.
    El plan completo está en PLAN_DISENO.md
    ===================================================================== */
 
@@ -59,35 +60,9 @@
   --radio-campo: 16px;
   --radio-pildora: 999px;
   --ancho: 640px;
-}
 
-/* Modo noche: "lluvia de noche" */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fondo-arriba: var(--agua-900);
-    --fondo-abajo: var(--agua-800);
-    --superficie: #123F3A;
-    --borde-tarjeta: #1A4A45;
-    --burbuja: #0F3632;
-    --texto: var(--agua-100);
-    --texto-suave: #9CC9C4;
-    --titulo: var(--agua-100);
-    --etiqueta: var(--agua-300);
-    --borde: #1F5A54;
-    --campo: #0F3632;
-    --campo-cerrado: #0F3632;
-    --boton: var(--agua-400);
-    --boton-hover: var(--agua-300);
-    --boton-texto: var(--agua-900);
-    --enlace: var(--agua-300);
-    --foco: var(--agua-400);
-    --gota: var(--agua-400);
-    --punto-linea: var(--agua-400);
-    --acento: #E3A9AE;
-    --acento-suave: #B5737A;
-    --error-fondo: #3A1E22;
-    --sombra: 0 8px 30px rgb(0 0 0 / 0.30), 0 1px 3px rgb(0 0 0 / 0.20);
-  }
+  /* Siempre en claro, aunque el móvil o el ordenador estén en modo oscuro */
+  color-scheme: light;
 }
 
 /* ---------- Base ---------- */

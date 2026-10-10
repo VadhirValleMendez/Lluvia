@@ -78,15 +78,8 @@ Tonos calculados a partir de los dos colores. El contraste está medido contra e
 - **Entrada:** las tarjetas aparecen con un *fade + subida* de 8 px (400 ms, `ease-out`), escalonado.
 - Al guardar, una sola onda circular sale del botón, como una gota que cae en un charco.
 
-## 6. Modo noche ("lluvia de noche")
-Con `prefers-color-scheme: dark`:
-- fondo `#0A2C29` → `#0F433E`
-- tarjetas `#123F3A`
-- texto `#E4F2F1`
-- botones en `--agua-400` con texto oscuro
-- rubí aclarado a `#CA9095` para que se lea
-
-Como todo son variables, basta con redefinirlas.
+## 6. Modo noche
+Descartado: la web se ve **siempre en claro**, con fondo blanco, aunque el dispositivo esté en modo oscuro (`color-scheme: light`).
 
 ## 7. Accesibilidad y detalles
 - Contraste AA en todo el texto: ver la tabla de la paleta.
@@ -97,7 +90,7 @@ Como todo son variables, basta con redefinirlas.
 - Favicon: una gota SVG en `#21948A`.
 
 ## 8. Cambios técnicos necesarios
-- `css/styles.css`: reescritura completa con las variables, los componentes y el modo noche.
+- `css/styles.css`: reescritura completa con las variables y los componentes.
 - Los tres HTML:
   - enlazar Google Fonts y añadir `theme-color` y el favicon
   - envolver las secciones en `.tarjeta`
@@ -116,8 +109,7 @@ Como todo son variables, basta con redefinirlas.
 4. Hoy.
 5. Historial.
 6. Ambiente: gotas y animaciones.
-7. Modo noche.
-8. Revisión en el móvil (375 px) y en escritorio, y comprobación de contraste.
+7. Revisión en el móvil (375 px) y en escritorio, y comprobación de contraste.
 
 ## Verificación
 - Servir la web con `python -m http.server` y revisar cada pantalla en el móvil (con DevTools) y en escritorio.
@@ -128,4 +120,4 @@ Como todo son variables, basta con redefinirlas.
   - pareja pendiente
   - error de login
   - historial vacío
-- Probar el modo oscuro y `prefers-reduced-motion` desde DevTools → Rendering.
+- Probar `prefers-reduced-motion` desde DevTools → Rendering, y que con el sistema en modo oscuro la web siga en blanco.
