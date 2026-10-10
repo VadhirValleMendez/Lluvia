@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lluvia - Inicio</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Oculto hasta confirmar que hay sesión iniciada -->
+  <main id="contenido" hidden>
+    <h1 id="saludo"></h1>
+    <p id="contador-dias"></p>
+
+    <nav>
+      <a href="home.html">Hoy</a> |
+      <a href="historial.html">Historial</a>
+    </nav>
+
+    <section>
+      <h2 id="titulo-pregunta">Pregunta del día</h2>
+      <p id="texto-pregunta"></p>
+
+      <form id="form-respuesta" hidden>
+        <label for="respuesta">Tu respuesta</label>
+        <textarea id="respuesta" rows="6" cols="50" required></textarea>
+        <button type="submit" id="btn-guardar">Guardar respuesta</button>
+      </form>
+
+      <p id="estado"></p>
+    </section>
+
+    <section id="seccion-pareja" hidden>
+      <h2 id="titulo-pareja"></h2>
+      <p id="respuesta-pareja" style="white-space: pre-wrap;"></p>
+    </section>
+
+    <button id="btn-salir">Cerrar sesión</button>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/lluvia.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

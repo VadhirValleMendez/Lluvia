@@ -1,0 +1,21 @@
+/* Estilos mínimos: por ahora solo funcionalidad */
+
+body {
+  font-family: sans-serif;
+  margin: 16px;
+}
+
+label,
+input,
+button {
+  display: block;
+  margin-bottom: 8px;
+}
+
+#mensaje {
+  color: red;
+}
+
+[hidden] {
+  display: none;
+}
