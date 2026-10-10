@@ -26,16 +26,18 @@
   --rubi-500: #94212B;
 
   /* Colores con significado (el modo noche solo cambia estos) */
-  --fondo-arriba: var(--agua-50);
-  --fondo-abajo: var(--agua-100);
+  --fondo-arriba: #FFFFFF; /* el fondo es blanco: el agua queda para los detalles */
+  --fondo-abajo: #FFFFFF;
   --superficie: #FFFFFF;
+  --borde-tarjeta: var(--agua-100);
+  --burbuja: var(--agua-50); /* respuestas ya escritas, en el historial y cerradas */
   --texto: var(--agua-900);
   --texto-suave: #4E7A75;
   --titulo: var(--agua-700);
   --etiqueta: var(--agua-600);
   --borde: var(--agua-200);
-  --campo: var(--agua-50);
-  --campo-cerrado: var(--agua-100);
+  --campo: #FFFFFF;
+  --campo-cerrado: var(--agua-50);
   --boton: var(--agua-600);
   --boton-hover: var(--agua-700);
   --boton-texto: #FFFFFF;
@@ -46,7 +48,7 @@
   --acento: var(--rubi-500);
   --acento-suave: var(--rubi-300);
   --error-fondo: var(--rubi-50);
-  --sombra: 0 8px 30px rgb(33 148 138 / 0.10), 0 1px 3px rgb(33 148 138 / 0.06);
+  --sombra: 0 8px 30px rgb(33 148 138 / 0.08), 0 1px 3px rgb(33 148 138 / 0.05);
 
   /* Letras */
   --letra-titulo: "Fraunces", Georgia, "Times New Roman", serif;
@@ -65,6 +67,8 @@
     --fondo-arriba: var(--agua-900);
     --fondo-abajo: var(--agua-800);
     --superficie: #123F3A;
+    --borde-tarjeta: #1A4A45;
+    --burbuja: #0F3632;
     --texto: var(--agua-100);
     --texto-suave: #9CC9C4;
     --titulo: var(--agua-100);
@@ -153,6 +157,7 @@ a {
 
 .tarjeta {
   background: var(--superficie);
+  border: 1px solid var(--borde-tarjeta);
   border-radius: var(--radio-tarjeta);
   box-shadow: var(--sombra);
   padding: 24px 20px;
@@ -268,7 +273,7 @@ button {
 }
 
 .btn-texto:hover {
-  background: var(--superficie);
+  background: var(--burbuja);
   color: var(--titulo);
 }
 
@@ -466,6 +471,7 @@ textarea:focus {
   padding: 4px;
   border-radius: var(--radio-pildora);
   background: var(--superficie);
+  border: 1px solid var(--borde-tarjeta);
   box-shadow: var(--sombra);
 }
 
@@ -684,7 +690,7 @@ textarea:focus {
 .respuesta {
   padding: 14px 16px;
   border-radius: var(--radio-campo);
-  background: var(--campo);
+  background: var(--burbuja);
 }
 
 .respuesta strong {

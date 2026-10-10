@@ -12,8 +12,8 @@ Tonos calculados a partir de los dos colores. El contraste está medido contra e
 
 | Variable | Color | Uso | Contraste |
 |---|---|---|---|
-| `--agua-50` | `#F4FAF9` | Fondo de la página (con degradado hacia `--agua-100`) | — |
-| `--agua-100` | `#E4F2F1` | Fondo de campos, respuesta cerrada | — |
+| `--agua-50` | `#F4FAF9` | Burbujas de respuestas ya escritas, respuesta cerrada | — |
+| `--agua-100` | `#E4F2F1` | Borde finito de tarjetas | — |
 | `--agua-200` | `#C1E1DE` | Bordes suaves, separadores | — |
 | `--agua-300` | `#90CAC5` | Gotas decorativas | — |
 | `--agua-400` | `#59AFA7` | Detalles e iconos grandes | — |
@@ -39,7 +39,7 @@ Tonos calculados a partir de los dos colores. El contraste está medido contra e
 - **Tarjeta** (`.tarjeta`): fondo blanco, `border-radius: 24px`, sombra muy difusa con tinte verde (`0 8px 30px rgb(33 148 138 / 0.10)`), padding generoso.
 - **Botón principal:** forma de píldora (`border-radius: 999px`), color `--agua-600`, hover en `--agua-700` con un ligero levantamiento (`translateY(-1px)`).
 - **Botón secundario** ("Cerrar sesión"): texto `--agua-700`, sin fondo, discreto al final de la página.
-- **Campos (`input` y `textarea`):** fondo `--agua-50`, borde `--agua-200`, `border-radius: 16px`. Al enfocar, el borde pasa a `--agua-500` con un halo suave. El `textarea` crece y no tiene bordes duros.
+- **Campos (`input` y `textarea`):** fondo blanco, borde `--agua-200`, `border-radius: 16px`. Al enfocar, el borde pasa a `--agua-500` con un halo suave. El `textarea` crece y no tiene bordes duros.
 - **Navegación** "Hoy / Historial": dos píldoras en un contenedor redondeado (control segmentado). La página activa se marca con fondo `--agua-600`. Sustituye a los enlaces separados por `|`.
 - **Mensajes de estado:**
   - "¡Guardado!": verde `--agua-700` con una pequeña gota ✓
@@ -70,7 +70,7 @@ Tonos calculados a partir de los dos colores. El contraste está medido contra e
 - Se eliminan los `<hr>`; el espacio entre tarjetas hace de separador.
 
 ## 5. Ambiente "lluvia"
-- **Fondo:** degradado vertical muy suave de `--agua-50` a `--agua-100`.
+- **Fondo:** blanco. Las tarjetas se distinguen por un borde finito `--agua-100` y una sombra muy suave. (Cambio tras la primera revisión: antes era un degradado verde agua.)
 - **Gotas:**
   - unas pocas gotas SVG en `--agua-300`, con opacidad entre 0.15 y 0.3, que caen muy despacio (entre 12 y 20 s por gota) detrás del contenido
   - solo 6–8 gotas, con `pointer-events: none`, para que no distraigan ni gasten batería
