@@ -41,7 +41,7 @@ async function iniciar() {
   }
 
   usuario = data.session.user;
-  saludo.textContent = "Hola, " + (NOMBRES[usuario.email] || usuario.email);
+  pintarTexto(saludo, ["Hola, ", mio(NOMBRES[usuario.email] || usuario.email)]);
   contenido.hidden = false;
 
   await cargarPregunta();
@@ -138,17 +138,20 @@ async function cargarPregunta() {
 
   // La respuesta de la pareja
   seccionPareja.hidden = false;
-  tituloPareja.textContent = "Respuesta de " + nombrePareja;
+  pintarTexto(tituloPareja, ["Respuesta de ", dePareja(nombrePareja)]);
 
   respuestaPareja.classList.toggle("en-espera", !respuestaDeLaPareja);
 
   if (respuestaDeLaPareja) {
     respuestaPareja.textContent = respuestaDeLaPareja.texto;
   } else if (!miRespuesta) {
-    respuestaPareja.textContent =
-      "Cuando guardes tu respuesta, aquí aparecerá la de " + nombrePareja + " (si ya respondió).";
+    pintarTexto(respuestaPareja, [
+      "Cuando guardes tu respuesta, aquí aparecerá la de ",
+      dePareja(nombrePareja),
+      " (si ya respondió).",
+    ]);
   } else {
-    respuestaPareja.textContent = nombrePareja + " todavía no responde.";
+    pintarTexto(respuestaPareja, [dePareja(nombrePareja), " todavía no responde."]);
   }
 }
 

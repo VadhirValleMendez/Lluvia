@@ -26,15 +26,15 @@
   --rubi-300: #CA9095;
   --rubi-500: #94212B;
 
-  /* Colores con significado (el modo noche solo cambia estos) */
+  /* Colores con significado */
   --fondo-arriba: #FFFFFF; /* el fondo es blanco: el agua queda para los detalles */
   --fondo-abajo: #FFFFFF;
   --superficie: #FFFFFF;
   --borde-tarjeta: var(--agua-100);
   --burbuja: var(--agua-50); /* respuestas ya escritas, en el historial y cerradas */
-  --texto: var(--agua-900);
-  --texto-suave: #4E7A75;
-  --titulo: var(--agua-700);
+  --texto: #1A1A1A; /* los textos son negros; el color solo remarca */
+  --texto-suave: #5E5E5E;
+  --titulo: #1A1A1A;
   --etiqueta: var(--agua-600);
   --borde: var(--agua-200);
   --campo: #FFFFFF;
@@ -48,6 +48,14 @@
   --punto-linea: var(--agua-400);
   --acento: var(--rubi-500);
   --acento-suave: var(--rubi-300);
+
+  /* Lo propio es agua; lo de la pareja es rubí */
+  --mio: var(--agua-600);
+  --mio-intenso: var(--agua-500); /* solo en texto grande (contraste 3.7) */
+  --mio-suave: var(--agua-300);
+  --pareja: var(--rubi-500);
+  --pareja-suave: var(--rubi-300);
+  --pareja-fondo: var(--rubi-50);
   --error-fondo: var(--rubi-50);
   --sombra: 0 8px 30px rgb(33 148 138 / 0.08), 0 1px 3px rgb(33 148 138 / 0.05);
 
@@ -342,7 +350,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--titulo);
+  color: var(--mio);
   animation: aparecer 0.3s ease-out both;
 }
 
@@ -515,6 +523,7 @@ textarea:focus {
 .marca h1 {
   font-size: 44px;
   font-weight: 600;
+  color: var(--mio-intenso);
 }
 
 .lema {
@@ -538,6 +547,31 @@ textarea:focus {
   text-align: left;
 }
 
+/* ---------- Lo mío y lo de la pareja ---------- */
+/* Regla: todo lo propio se remarca en agua, todo lo de la pareja en rubí.
+   El resto del texto es negro. */
+
+.mio {
+  color: var(--mio);
+  font-weight: 700;
+}
+
+.de-pareja {
+  color: var(--pareja);
+  font-weight: 700;
+}
+
+/* En los títulos grandes el agua puede ser la intensa */
+h1 .mio {
+  color: var(--mio-intenso);
+  font-weight: inherit;
+}
+
+h2 .de-pareja,
+h3 .de-pareja {
+  font-weight: inherit;
+}
+
 /* ---------- Hoy ---------- */
 
 .etiqueta {
@@ -555,13 +589,12 @@ textarea:focus {
 }
 
 .pareja {
-  border-left: 4px solid var(--acento-suave);
+  border-left: 4px solid var(--pareja-suave);
 }
 
 .pareja h2 {
   margin-bottom: 12px;
   font-size: 20px;
-  color: var(--acento);
 }
 
 .texto-respuesta {
@@ -569,23 +602,23 @@ textarea:focus {
   white-space: pre-wrap; /* respeta los saltos de línea */
 }
 
-/* Mientras se espera la respuesta de la pareja */
+/* Mientras se espera la respuesta de la pareja: una gota granate que espera */
 .en-espera {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  position: relative;
+  padding-left: 24px;
   font-style: italic;
   color: var(--texto-suave);
 }
 
 .en-espera::before {
   content: "";
-  flex: none;
+  position: absolute;
+  left: 0;
+  top: 7px;
   width: 12px;
   height: 12px;
-  margin-top: 6px;
   border-radius: 0 50% 50% 50%;
-  background: var(--gota);
+  background: var(--pareja-suave);
   transform: rotate(45deg);
   animation: esperar 2.4s ease-in-out infinite;
 }
@@ -672,7 +705,14 @@ textarea:focus {
   display: block;
   margin-bottom: 4px;
   font-size: 15px;
-  color: var(--titulo);
+}
+
+.respuesta--mia {
+  border-left: 4px solid var(--mio-suave);
+}
+
+.respuesta--mia strong {
+  color: var(--mio);
 }
 
 .respuesta p {
@@ -681,11 +721,12 @@ textarea:focus {
 }
 
 .respuesta--pareja {
-  border-left: 4px solid var(--acento-suave);
+  border-left: 4px solid var(--pareja-suave);
+  background: var(--pareja-fondo);
 }
 
 .respuesta--pareja strong {
-  color: var(--acento);
+  color: var(--pareja);
 }
 
 .respuesta--pendiente {

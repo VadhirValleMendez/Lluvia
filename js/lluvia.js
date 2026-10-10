@@ -71,6 +71,32 @@ function diasJuntos() {
   return Math.round((hoyEnMexico() - inicio) / 86400000);
 }
 
+// Pinta un texto con partes remarcadas, por ejemplo:
+//   pintarTexto(saludo, ["Hola, ", mio("Vadhir")])
+// Cada parte se pone como texto (nunca como HTML), así que es seguro.
+function pintarTexto(elemento, partes) {
+  elemento.textContent = "";
+  for (const parte of partes) {
+    if (typeof parte === "string") {
+      elemento.append(parte);
+    } else {
+      const span = document.createElement("span");
+      span.className = parte.clase;
+      span.textContent = parte.texto;
+      elemento.append(span);
+    }
+  }
+}
+
+// Lo propio se remarca en agua y lo de la pareja en rubí
+function mio(texto) {
+  return { texto, clase: "mio" };
+}
+
+function dePareja(texto) {
+  return { texto, clase: "de-pareja" };
+}
+
 // Borrador de la respuesta, guardado en este navegador para no perder lo escrito.
 // localStorage puede fallar (modo privado, bloqueado...), por eso el try/catch:
 // si falla, simplemente no hay borrador.

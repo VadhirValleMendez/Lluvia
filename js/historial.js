@@ -7,7 +7,7 @@ const btnSalir = document.getElementById("btn-salir");
 // y nunca se ejecutan como código.
 function crearBloque(titulo, texto, esDeLaPareja) {
   const bloque = document.createElement("div");
-  bloque.className = "respuesta" + (esDeLaPareja ? " respuesta--pareja" : "");
+  bloque.className = "respuesta " + (esDeLaPareja ? "respuesta--pareja" : "respuesta--mia");
 
   const negrita = document.createElement("strong");
   negrita.textContent = titulo;
@@ -20,13 +20,14 @@ function crearBloque(titulo, texto, esDeLaPareja) {
   return bloque;
 }
 
-// Bloque para una respuesta que todavía no se puede mostrar
-function crearPendiente(texto, enlace) {
+// Bloque para una respuesta que todavía no se puede mostrar.
+// "partes" es lo mismo que recibe pintarTexto (textos y nombres remarcados).
+function crearPendiente(partes, enlace) {
   const bloque = document.createElement("div");
   bloque.className = "respuesta respuesta--pendiente";
 
   const parrafo = document.createElement("p");
-  parrafo.textContent = texto;
+  pintarTexto(parrafo, partes);
   bloque.appendChild(parrafo);
 
   if (enlace) bloque.appendChild(enlace);
@@ -80,7 +81,7 @@ function dibujar(preguntas, respuestas, perfiles, miId) {
       enlace.className = "btn-mini";
       enlace.href = "home.html?pregunta=" + pregunta.numero;
       enlace.textContent = "Responder";
-      respuestas.appendChild(crearPendiente("Aún no respondes esta pregunta.", enlace));
+      respuestas.appendChild(crearPendiente(["Aún no respondes esta pregunta."], enlace));
     }
 
     // Respuesta de la pareja (solo llega si yo ya respondí; lo decide la base de datos)
@@ -88,10 +89,14 @@ function dibujar(preguntas, respuestas, perfiles, miId) {
       respuestas.appendChild(crearBloque(nombrePareja, deLaPareja.texto, true));
     } else if (!mia) {
       respuestas.appendChild(
-        crearPendiente("La respuesta de " + nombrePareja + " se mostrará cuando respondas la tuya.")
+        crearPendiente([
+          "La respuesta de ",
+          dePareja(nombrePareja),
+          " se mostrará cuando respondas la tuya.",
+        ])
       );
     } else {
-      respuestas.appendChild(crearPendiente(nombrePareja + " todavía no responde."));
+      respuestas.appendChild(crearPendiente([dePareja(nombrePareja), " todavía no responde."]));
     }
 
     lista.appendChild(articulo);

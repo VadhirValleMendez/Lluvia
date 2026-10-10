@@ -8,9 +8,11 @@
 2. **El color dominante es el blanco.** El fondo de las páginas es blanco (nada de fondos verde agua). **No hay modo noche**: la web se ve siempre en claro aunque el dispositivo esté en modo oscuro (`color-scheme: light`). El verde agua es el color principal **para los detalles**: botones, marcadores, bordes finos, etiquetas, gotas. Se usa con intención, sin abusar de él.
 3. **Usar más el principal y sus variaciones** (tonos claros y oscuros de `#21948A`) que el complementario. El complementario es un acento: se usa poco y con intención (corazones, lo que es de la pareja, errores). Nunca como color de fondo grande.
 4. **Las gotas de agua son la seña de identidad y se mantienen siempre.** Los marcadores y detalles tienen forma de gota: puntos de la línea de tiempo, el indicador de "¡Guardado!", la espera de la respuesta de la pareja, las gotas que caen en el fondo, el favicon, el logo. Cualquier marcador o detalle nuevo debe seguir este concepto antes que usar círculos, viñetas o iconos genéricos.
-5. El diseño debe transmitir **tranquilidad, suavidad y algo "lindo"**: esquinas redondeadas, sombras suaves, mucho espacio, movimientos lentos y discretos.
-6. Contraste accesible (WCAG AA): `#21948A` sobre blanco da solo 3.7:1, así que **no se usa para texto normal ni para botones con texto blanco**. Para eso se usa un tono más oscuro del principal (`#1A766E` o más oscuro).
-7. Los colores se definen como variables CSS en `:root` (`css/styles.css`); no se escriben colores sueltos en otros sitios.
+5. **Los textos son negros; el color solo remarca, y con intensidad.** El texto normal es negro (`--texto`) y gris para lo secundario. El color se reserva para resaltar palabras concretas, por ejemplo "Hola, **Vadhir**": "Hola," en negro y el nombre en agua.
+6. **Lo propio es agua y lo de la pareja es granate.** Todo lo que pertenece al usuario con sesión iniciada (su nombre, "Tu respuesta", sus marcadores y bordes) va en verde agua. Todo lo que pertenece a la otra persona (su nombre, sus respuestas, sus avisos, sus marcadores y bordes) va en granate. En el código: clases `.mio` / `.de-pareja` y la función `pintarTexto()` de `js/lluvia.js`, con `mio()` y `dePareja()`.
+7. El diseño debe transmitir **tranquilidad, suavidad y algo "lindo"**: esquinas redondeadas, sombras suaves, mucho espacio, movimientos lentos y discretos.
+8. Contraste accesible (WCAG AA): `#21948A` sobre blanco da solo 3.7:1, así que **no se usa para texto normal ni para botones con texto blanco**. Para eso se usa un tono más oscuro del principal (`#1A766E` o más oscuro).
+9. Los colores se definen como variables CSS en `:root` (`css/styles.css`); no se escriben colores sueltos en otros sitios.
 
 El plan de diseño completo está en `PLAN_DISENO.md`.
 
