@@ -17,6 +17,19 @@ let numero = 0;           // número de la pregunta que se está mostrando
 let miRespuesta = null;   // mi respuesta guardada (o null si aún no respondo)
 let cerrada = false;      // true cuando ya respondimos los dos: ya no se puede editar
 
+// Muestra un mensaje bajo la respuesta. tipo: "ok", "error", "cerrado" o nada (neutral)
+function ponerEstado(texto, tipo) {
+  estado.textContent = texto;
+  estado.className = "estado" + (tipo ? " estado--" + tipo : "");
+}
+
+// Onda en el botón al guardar (como una gota que cae en un charco)
+function onda(boton) {
+  boton.classList.remove("onda");
+  void boton.offsetWidth; // reinicia la animación
+  boton.classList.add("onda");
+}
+
 // Protección de la página: si no hay sesión, de regreso al login.
 // (Es solo comodidad: la seguridad real son las reglas RLS de la base de datos.)
 async function iniciar() {
@@ -40,7 +53,7 @@ async function iniciar() {
 
 async function cargarPregunta() {
   const hoy = numeroDePreguntaHoy();
-  estado.textContent = "";
+  ponerEstado("");
 
   if (hoy < 1) {
     tituloPregunta.textContent = "Pregunta del día";
@@ -57,8 +70,8 @@ async function cargarPregunta() {
 
   tituloPregunta.textContent =
     numero === hoy
-      ? "Pregunta de hoy (#" + numero + ")"
-      : "Pregunta #" + numero + " (" + fechaDePregunta(numero) + ")";
+      ? "Pregunta de hoy · #" + numero
+      : "Pregunta #" + numero + " · " + fechaDePregunta(numero);
 
   // 1) La pregunta
   const { data: pregunta, error: errPregunta } = await db
@@ -69,7 +82,8 @@ async function cargarPregunta() {
 
   if (errPregunta) {
     console.error(errPregunta.message);
-    textoPregunta.textContent = "No se pudo cargar la pregunta. Intenta de nuevo.";
+    textoPregunta.textContent = "";
+    ponerEstado("No se pudo cargar la pregunta. Intenta de nuevo.", "error");
     return;
   }
 
@@ -91,7 +105,7 @@ async function cargarPregunta() {
 
   if (resp.error) {
     console.error(resp.error.message);
-    estado.textContent = "No se pudieron cargar las respuestas.";
+    ponerEstado("No se pudieron cargar las respuestas.", "error");
     return;
   }
 
@@ -109,12 +123,13 @@ async function cargarPregunta() {
   formRespuesta.hidden = false;
   campoRespuesta.value = miRespuesta ? miRespuesta.texto : "";
   campoRespuesta.readOnly = cerrada;
+  formRespuesta.classList.toggle("respuesta-cerrada", cerrada);
   btnGuardar.hidden = cerrada;
   btnGuardar.textContent = miRespuesta ? "Actualizar respuesta" : "Guardar respuesta";
 
   if (cerrada) {
     borrarBorrador(claveBorrador(usuario.id, numero));
-    estado.textContent = "Las dos respuestas están guardadas; ya no se pueden editar.";
+    ponerEstado("Las dos respuestas están guardadas; ya no se pueden editar.", "cerrado");
   } else {
     // Si quedó algo escrito sin guardar, lo recuperamos
     const borrador = leerBorrador(claveBorrador(usuario.id, numero));
@@ -124,6 +139,8 @@ async function cargarPregunta() {
   // La respuesta de la pareja
   seccionPareja.hidden = false;
   tituloPareja.textContent = "Respuesta de " + nombrePareja;
+
+  respuestaPareja.classList.toggle("en-espera", !respuestaDeLaPareja);
 
   if (respuestaDeLaPareja) {
     respuestaPareja.textContent = respuestaDeLaPareja.texto;
@@ -148,7 +165,8 @@ formRespuesta.addEventListener("submit", async (e) => {
   if (!texto) return;
 
   btnGuardar.disabled = true;
-  estado.textContent = "Guardando...";
+  onda(btnGuardar);
+  ponerEstado("Guardando...");
 
   let error;
   if (miRespuesta) {
@@ -165,7 +183,7 @@ formRespuesta.addEventListener("submit", async (e) => {
     if (!error && data.length === 0) {
       btnGuardar.disabled = false;
       await cargarPregunta();
-      estado.textContent = "Tu pareja ya respondió; tu respuesta quedó cerrada.";
+      ponerEstado("Tu pareja ya respondió; tu respuesta quedó cerrada.", "cerrado");
       return;
     }
   } else {
@@ -177,15 +195,18 @@ formRespuesta.addEventListener("submit", async (e) => {
 
   if (error) {
     console.error(error.message);
-    estado.textContent = "No se pudo guardar. Intenta de nuevo.";
+    ponerEstado("No se pudo guardar. Intenta de nuevo.", "error");
     return;
   }
 
   borrarBorrador(claveBorrador(usuario.id, numero));
   await cargarPregunta();
-  estado.textContent = cerrada
-    ? "¡Guardado! Ya respondieron los dos, así que las respuestas quedan cerradas."
-    : "¡Guardado!";
+  ponerEstado(
+    cerrada
+      ? "¡Guardado! Ya respondieron los dos, así que las respuestas quedan cerradas."
+      : "¡Guardado!",
+    "ok"
+  );
 });
 
 btnSalir.addEventListener("click", async () => {

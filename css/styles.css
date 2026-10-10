@@ -1,21 +1,745 @@
-/* Estilos mínimos: por ahora solo funcionalidad */
+/* =====================================================================
+   Lluvia — "una tarde de lluvia tranquila"
+   Colores: principal #21948A (agua) y complementario #94212B (rubí).
+   Se usa mucho más el agua; el rubí es solo un acento.
+   El plan completo está en PLAN_DISENO.md
+   ===================================================================== */
+
+/* ---------- Paleta y variables ---------- */
+
+:root {
+  /* Tonos del principal */
+  --agua-50: #F4FAF9;
+  --agua-100: #E4F2F1;
+  --agua-200: #C1E1DE;
+  --agua-300: #90CAC5;
+  --agua-400: #59AFA7;
+  --agua-500: #21948A; /* principal: solo decorativo o texto grande (contraste 3.7) */
+  --agua-600: #1A766E;
+  --agua-700: #145C56;
+  --agua-800: #0F433E;
+  --agua-900: #0A2C29;
+
+  /* Tonos del complementario */
+  --rubi-50: #F9F2F2;
+  --rubi-300: #CA9095;
+  --rubi-500: #94212B;
+
+  /* Colores con significado (el modo noche solo cambia estos) */
+  --fondo-arriba: var(--agua-50);
+  --fondo-abajo: var(--agua-100);
+  --superficie: #FFFFFF;
+  --texto: var(--agua-900);
+  --texto-suave: #4E7A75;
+  --titulo: var(--agua-700);
+  --etiqueta: var(--agua-600);
+  --borde: var(--agua-200);
+  --campo: var(--agua-50);
+  --campo-cerrado: var(--agua-100);
+  --boton: var(--agua-600);
+  --boton-hover: var(--agua-700);
+  --boton-texto: #FFFFFF;
+  --enlace: var(--agua-600);
+  --foco: var(--agua-500);
+  --gota: var(--agua-300);
+  --punto-linea: var(--agua-400);
+  --acento: var(--rubi-500);
+  --acento-suave: var(--rubi-300);
+  --error-fondo: var(--rubi-50);
+  --sombra: 0 8px 30px rgb(33 148 138 / 0.10), 0 1px 3px rgb(33 148 138 / 0.06);
+
+  /* Letras */
+  --letra-titulo: "Fraunces", Georgia, "Times New Roman", serif;
+  --letra-texto: "Nunito", "Segoe UI", system-ui, sans-serif;
+
+  /* Formas y medidas */
+  --radio-tarjeta: 24px;
+  --radio-campo: 16px;
+  --radio-pildora: 999px;
+  --ancho: 640px;
+}
+
+/* Modo noche: "lluvia de noche" */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo-arriba: var(--agua-900);
+    --fondo-abajo: var(--agua-800);
+    --superficie: #123F3A;
+    --texto: var(--agua-100);
+    --texto-suave: #9CC9C4;
+    --titulo: var(--agua-100);
+    --etiqueta: var(--agua-300);
+    --borde: #1F5A54;
+    --campo: #0F3632;
+    --campo-cerrado: #0F3632;
+    --boton: var(--agua-400);
+    --boton-hover: var(--agua-300);
+    --boton-texto: var(--agua-900);
+    --enlace: var(--agua-300);
+    --foco: var(--agua-400);
+    --gota: var(--agua-400);
+    --punto-linea: var(--agua-400);
+    --acento: #E3A9AE;
+    --acento-suave: #B5737A;
+    --error-fondo: #3A1E22;
+    --sombra: 0 8px 30px rgb(0 0 0 / 0.30), 0 1px 3px rgb(0 0 0 / 0.20);
+  }
+}
+
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
 
 body {
-  font-family: sans-serif;
-  margin: 16px;
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  font-family: var(--letra-texto);
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--texto);
+  background-color: var(--fondo-arriba);
+  background-image: linear-gradient(180deg, var(--fondo-arriba) 0%, var(--fondo-abajo) 100%);
+  background-attachment: fixed;
 }
 
-label,
-input,
-button {
-  display: block;
-  margin-bottom: 8px;
+main {
+  position: relative; /* por encima de las gotas */
+  z-index: 1;
+  width: 100%;
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 32px 16px 48px;
 }
 
-#mensaje {
-  color: red;
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--letra-titulo);
+  font-weight: 500;
+  font-variation-settings: "SOFT" 100;
+  color: var(--titulo);
+  line-height: 1.25;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--enlace);
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 3px;
 }
 
 [hidden] {
+  display: none !important;
+}
+
+/* ---------- Tarjeta ---------- */
+
+.tarjeta {
+  background: var(--superficie);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra);
+  padding: 24px 20px;
+  margin-bottom: 20px;
+  animation: aparecer 0.4s ease-out both;
+}
+
+@media (min-width: 600px) {
+  .tarjeta {
+    padding: 32px;
+  }
+}
+
+/* Aparecen una tras otra, con calma */
+.tarjeta:nth-of-type(2) { animation-delay: 0.08s; }
+.tarjeta:nth-of-type(3) { animation-delay: 0.16s; }
+.tarjeta:nth-of-type(4) { animation-delay: 0.24s; }
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Botones ---------- */
+
+button {
+  font: inherit;
+}
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 28px;
+  border: 0;
+  border-radius: var(--radio-pildora);
+  background: var(--boton);
+  color: var(--boton-texto);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.btn:hover {
+  background: var(--boton-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgb(20 92 86 / 0.18);
+}
+
+.btn:active {
+  transform: none;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: progress;
+  transform: none;
+}
+
+/* Onda al guardar: como una gota que cae en un charco */
+.btn.onda::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.45);
+  animation: onda 0.7s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes onda {
+  from {
+    transform: scale(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(12);
+    opacity: 0;
+  }
+}
+
+.btn--ancho {
+  width: 100%;
+}
+
+/* Botón discreto: "Cerrar sesión" */
+.btn-texto {
+  display: block;
+  min-height: 44px;
+  margin: 8px auto 0;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: var(--radio-pildora);
+  background: transparent;
+  color: var(--texto-suave);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.btn-texto:hover {
+  background: var(--superficie);
+  color: var(--titulo);
+}
+
+/* Enlace con forma de píldora pequeña ("Responder") */
+.btn-mini {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 6px 16px;
+  border-radius: var(--radio-pildora);
+  background: var(--boton);
+  color: var(--boton-texto);
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background-color 0.25s ease;
+}
+
+.btn-mini:hover {
+  background: var(--boton-hover);
+}
+
+/* ---------- Formularios ---------- */
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--texto-suave);
+}
+
+input,
+textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 12px 16px;
+  font: inherit;
+  color: var(--texto);
+  background: var(--campo);
+  border: 1.5px solid var(--borde);
+  border-radius: var(--radio-campo);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+input {
+  min-height: 48px;
+}
+
+textarea {
+  min-height: 160px;
+  line-height: 1.6;
+  resize: vertical;
+  field-sizing: content; /* crece con el texto donde el navegador lo permite */
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--foco);
+  box-shadow: 0 0 0 4px rgb(33 148 138 / 0.15);
+}
+
+/* Respuesta cerrada: se lee como una carta, sin caja */
+.respuesta-cerrada textarea {
+  background: var(--campo-cerrado);
+  border-color: transparent;
+  resize: none;
+  cursor: default;
+}
+
+.respuesta-cerrada textarea:focus {
+  box-shadow: none;
+}
+
+/* ---------- Mensajes de estado ---------- */
+
+.estado {
+  margin-top: 14px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--texto-suave);
+}
+
+.estado:empty {
   display: none;
+}
+
+.estado--ok {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--titulo);
+  animation: aparecer 0.3s ease-out both;
+}
+
+/* Una gotita antes del "¡Guardado!" */
+.estado--ok::before {
+  content: "";
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 0 50% 50% 50%;
+  transform: rotate(45deg);
+  background: var(--agua-500);
+}
+
+.estado--error {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--error-fondo);
+  color: var(--acento);
+}
+
+.estado--cerrado {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--campo-cerrado);
+  color: var(--etiqueta);
+}
+
+/* ---------- Gotas de lluvia (fondo) ---------- */
+
+.lluvia {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.gota {
+  position: absolute;
+  top: -40px;
+  width: 10px;
+  height: 10px;
+  border-radius: 0 50% 50% 50%; /* con el giro queda en forma de gota */
+  background: var(--gota);
+  opacity: 0.25;
+  animation: caer 16s linear infinite;
+}
+
+.gota:nth-child(1) { left: 8%;  animation-duration: 15s; animation-delay: -2s;  opacity: 0.22; }
+.gota:nth-child(2) { left: 22%; animation-duration: 19s; animation-delay: -9s;  opacity: 0.15; width: 8px; height: 8px; }
+.gota:nth-child(3) { left: 37%; animation-duration: 13s; animation-delay: -5s;  opacity: 0.28; }
+.gota:nth-child(4) { left: 53%; animation-duration: 18s; animation-delay: -13s; opacity: 0.18; width: 12px; height: 12px; }
+.gota:nth-child(5) { left: 68%; animation-duration: 14s; animation-delay: -7s;  opacity: 0.25; width: 8px; height: 8px; }
+.gota:nth-child(6) { left: 81%; animation-duration: 20s; animation-delay: -1s;  opacity: 0.2; }
+.gota:nth-child(7) { left: 93%; animation-duration: 16s; animation-delay: -11s; opacity: 0.3; width: 9px; height: 9px; }
+
+@keyframes caer {
+  from {
+    transform: translateY(0) rotate(45deg);
+  }
+  to {
+    transform: translateY(calc(100vh + 80px)) rotate(45deg);
+  }
+}
+
+/* ---------- Cabecera y navegación ---------- */
+
+.cabecera {
+  margin-bottom: 20px;
+  animation: aparecer 0.4s ease-out both;
+}
+
+.cabecera h1 {
+  font-size: clamp(28px, 7vw, 36px);
+}
+
+.contador {
+  margin-top: 4px;
+  color: var(--texto-suave);
+  font-weight: 600;
+}
+
+.contador:empty {
+  display: none;
+}
+
+.contador::before {
+  content: "♥";
+  content: "♥" / ""; /* decorativo: los lectores de pantalla no lo leen */
+  margin-right: 6px;
+  color: var(--acento);
+}
+
+.nav {
+  display: flex;
+  gap: 4px;
+  width: fit-content;
+  margin-bottom: 24px;
+  padding: 4px;
+  border-radius: var(--radio-pildora);
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+}
+
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 22px;
+  border-radius: var(--radio-pildora);
+  color: var(--texto-suave);
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.nav a:hover {
+  color: var(--titulo);
+}
+
+.nav a[aria-current="page"] {
+  background: var(--boton);
+  color: var(--boton-texto);
+}
+
+/* ---------- Login ---------- */
+
+.pagina-login main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  max-width: 420px;
+}
+
+.marca {
+  margin-bottom: 24px;
+  text-align: center;
+  animation: aparecer 0.5s ease-out both;
+}
+
+.marca svg {
+  display: block;
+  width: 112px;
+  height: auto;
+  margin: 0 auto 8px;
+}
+
+.marca .nube {
+  fill: var(--agua-200);
+}
+
+.marca .gotita {
+  fill: var(--agua-500);
+  animation: gotear 3.2s ease-in-out infinite;
+}
+
+.marca .gotita:nth-of-type(2) { animation-delay: 0.6s; }
+.marca .gotita:nth-of-type(3) { animation-delay: 1.2s; }
+
+@keyframes gotear {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(4px); opacity: 0.6; }
+}
+
+.marca h1 {
+  font-size: 44px;
+  font-weight: 600;
+}
+
+.lema {
+  margin-top: 6px;
+  color: var(--texto-suave);
+}
+
+#mensaje:empty {
+  display: none;
+}
+
+#mensaje {
+  margin-top: 16px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--texto-suave);
+}
+
+#mensaje.estado--error {
+  text-align: left;
+}
+
+/* ---------- Hoy ---------- */
+
+.etiqueta {
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--etiqueta);
+}
+
+.pregunta {
+  margin-bottom: 24px;
+  font-size: clamp(24px, 6vw, 28px);
+}
+
+.pareja {
+  border-left: 4px solid var(--acento-suave);
+}
+
+.pareja h2 {
+  margin-bottom: 12px;
+  font-size: 20px;
+  color: var(--acento);
+}
+
+.texto-respuesta {
+  line-height: 1.6;
+  white-space: pre-wrap; /* respeta los saltos de línea */
+}
+
+/* Mientras se espera la respuesta de la pareja */
+.en-espera {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-style: italic;
+  color: var(--texto-suave);
+}
+
+.en-espera::before {
+  content: "";
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-top: 6px;
+  border-radius: 0 50% 50% 50%;
+  background: var(--gota);
+  transform: rotate(45deg);
+  animation: esperar 2.4s ease-in-out infinite;
+}
+
+@keyframes esperar {
+  0%, 100% { transform: translateY(0) rotate(45deg); opacity: 1; }
+  50% { transform: translateY(5px) rotate(45deg); opacity: 0.5; }
+}
+
+/* ---------- Historial ---------- */
+
+.pagina-historial {
+  --ancho: 760px;
+}
+
+.cabecera--historial {
+  margin-bottom: 20px;
+}
+
+.cabecera--historial h1 {
+  font-size: clamp(28px, 7vw, 36px);
+}
+
+.linea-tiempo {
+  color: var(--texto-suave);
+}
+
+/* La línea punteada solo aparece cuando hay días que unir */
+.linea-tiempo:has(.dia) {
+  position: relative;
+  padding-left: 28px;
+}
+
+.linea-tiempo:has(.dia)::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  bottom: 12px;
+  border-left: 2px dotted var(--borde);
+}
+
+.dia {
+  position: relative;
+  color: var(--texto);
+}
+
+/* El punto de la línea de tiempo es una gota */
+.dia::before {
+  content: "";
+  position: absolute;
+  left: -25px;
+  top: 30px;
+  width: 12px;
+  height: 12px;
+  border-radius: 0 50% 50% 50%;
+  transform: rotate(45deg);
+  background: var(--punto-linea);
+}
+
+.dia h3 {
+  margin-bottom: 16px;
+  font-size: 21px;
+}
+
+.respuestas {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 600px) {
+  .respuestas {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.respuesta {
+  padding: 14px 16px;
+  border-radius: var(--radio-campo);
+  background: var(--campo);
+}
+
+.respuesta strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 15px;
+  color: var(--titulo);
+}
+
+.respuesta p {
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.respuesta--pareja {
+  border-left: 4px solid var(--acento-suave);
+}
+
+.respuesta--pareja strong {
+  color: var(--acento);
+}
+
+.respuesta--pendiente {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  background: transparent;
+  border: 1.5px dashed var(--borde);
+  color: var(--texto-suave);
+}
+
+.respuesta--pendiente p {
+  font-style: italic;
+}
+
+/* ---------- Menos movimiento si así lo pide el sistema ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Las gotas se quedan quietas, repartidas por la pantalla */
+  .gota { animation: none; transform: rotate(45deg); }
+  .gota:nth-child(1) { top: 12%; }
+  .gota:nth-child(2) { top: 64%; }
+  .gota:nth-child(3) { top: 30%; }
+  .gota:nth-child(4) { top: 82%; }
+  .gota:nth-child(5) { top: 45%; }
+  .gota:nth-child(6) { top: 20%; }
+  .gota:nth-child(7) { top: 70%; }
 }

@@ -5,18 +5,31 @@ const btnSalir = document.getElementById("btn-salir");
 // Crea un bloque "Nombre: texto". Se usa textContent (no innerHTML) a propósito:
 // así, si una respuesta contiene símbolos como < o >, se muestran como texto
 // y nunca se ejecutan como código.
-function crearBloque(titulo, texto) {
+function crearBloque(titulo, texto, esDeLaPareja) {
   const bloque = document.createElement("div");
+  bloque.className = "respuesta" + (esDeLaPareja ? " respuesta--pareja" : "");
 
   const negrita = document.createElement("strong");
   negrita.textContent = titulo;
   bloque.appendChild(negrita);
 
   const parrafo = document.createElement("p");
-  parrafo.style.whiteSpace = "pre-wrap"; // respeta los saltos de línea
   parrafo.textContent = texto;
   bloque.appendChild(parrafo);
 
+  return bloque;
+}
+
+// Bloque para una respuesta que todavía no se puede mostrar
+function crearPendiente(texto, enlace) {
+  const bloque = document.createElement("div");
+  bloque.className = "respuesta respuesta--pendiente";
+
+  const parrafo = document.createElement("p");
+  parrafo.textContent = texto;
+  bloque.appendChild(parrafo);
+
+  if (enlace) bloque.appendChild(enlace);
   return bloque;
 }
 
@@ -44,43 +57,44 @@ function dibujar(preguntas, respuestas, perfiles, miId) {
     const deLaPareja = delDia.find((r) => r.usuario_id !== miId);
 
     const articulo = document.createElement("article");
+    articulo.className = "tarjeta dia";
+
+    const etiqueta = document.createElement("p");
+    etiqueta.className = "etiqueta";
+    etiqueta.textContent = "#" + pregunta.numero + " · " + fechaDePregunta(pregunta.numero);
+    articulo.appendChild(etiqueta);
 
     const titulo = document.createElement("h3");
-    titulo.textContent = "#" + pregunta.numero + " · " + fechaDePregunta(pregunta.numero);
+    titulo.textContent = pregunta.texto;
     articulo.appendChild(titulo);
 
-    const texto = document.createElement("p");
-    texto.textContent = pregunta.texto;
-    articulo.appendChild(texto);
+    const respuestas = document.createElement("div");
+    respuestas.className = "respuestas";
+    articulo.appendChild(respuestas);
 
     // Mi respuesta
     if (mia) {
-      articulo.appendChild(crearBloque(miNombre, mia.texto));
+      respuestas.appendChild(crearBloque(miNombre, mia.texto, false));
     } else {
-      const aviso = document.createElement("p");
-      aviso.textContent = "Aún no respondes esta pregunta. ";
       const enlace = document.createElement("a");
+      enlace.className = "btn-mini";
       enlace.href = "home.html?pregunta=" + pregunta.numero;
       enlace.textContent = "Responder";
-      aviso.appendChild(enlace);
-      articulo.appendChild(aviso);
+      respuestas.appendChild(crearPendiente("Aún no respondes esta pregunta.", enlace));
     }
 
     // Respuesta de la pareja (solo llega si yo ya respondí; lo decide la base de datos)
     if (deLaPareja) {
-      articulo.appendChild(crearBloque(nombrePareja, deLaPareja.texto));
+      respuestas.appendChild(crearBloque(nombrePareja, deLaPareja.texto, true));
     } else if (!mia) {
-      const aviso = document.createElement("p");
-      aviso.textContent = "La respuesta de " + nombrePareja + " se mostrará cuando respondas la tuya.";
-      articulo.appendChild(aviso);
+      respuestas.appendChild(
+        crearPendiente("La respuesta de " + nombrePareja + " se mostrará cuando respondas la tuya.")
+      );
     } else {
-      const aviso = document.createElement("p");
-      aviso.textContent = nombrePareja + " todavía no responde.";
-      articulo.appendChild(aviso);
+      respuestas.appendChild(crearPendiente(nombrePareja + " todavía no responde."));
     }
 
     lista.appendChild(articulo);
-    lista.appendChild(document.createElement("hr"));
   }
 }
 

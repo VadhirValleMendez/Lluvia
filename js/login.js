@@ -12,6 +12,7 @@ db.auth.getSession().then(({ data }) => {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   mensaje.textContent = "";
+  mensaje.className = "";
 
   const usuario = document.getElementById("usuario").value.trim().toLowerCase();
   const password = document.getElementById("password").value;
@@ -19,6 +20,7 @@ form.addEventListener("submit", async (e) => {
   const correo = CORREOS[usuario];
   if (!correo) {
     mensaje.textContent = "Usuario o contraseña incorrectos.";
+    mensaje.className = "estado--error";
     return;
   }
 
@@ -35,6 +37,7 @@ form.addEventListener("submit", async (e) => {
     // Mensaje genérico a propósito: no revelamos qué falló
     console.error(error.message);
     mensaje.textContent = "Usuario o contraseña incorrectos.";
+    mensaje.className = "estado--error";
     btnEntrar.disabled = false;
     return;
   }
