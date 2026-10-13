@@ -1257,34 +1257,10 @@ a.planta:focus-visible svg {
   text-align: left;
 }
 
-.marca svg {
-  display: block;
-  width: 88px;
-  height: auto;
-  margin: 0 0 2px -6px;
-}
-
-.marca__nube {
-  fill: var(--nube);
-}
-
-.marca__gota {
-  fill: var(--cielo-100);
-}
-
 .marca h1 {
   font-size: clamp(44px, 8svh, 60px);
   line-height: 1;
   color: var(--texto-cielo);
-  text-shadow: var(--sombra-texto);
-}
-
-.lema {
-  max-width: 22em;
-  margin: 8px 0 0;
-  color: var(--texto-cielo);
-  font-size: var(--t-texto);
-  font-weight: 700;
   text-shadow: var(--sombra-texto);
 }
 
@@ -1313,11 +1289,6 @@ a.planta:focus-visible svg {
 #mensaje.estado--error {
   text-align: left;
   color: var(--pareja);
-}
-
-@media (max-height: 640px) {
-  .marca svg { display: none; }
-  .pagina--login .nube-pregunta { margin-top: 36px; }
 }
 
 /* ---------- La lluvia que riega el jardín (js/tormenta.js) ---------- */
