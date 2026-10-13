@@ -7,21 +7,60 @@ const campoRespuesta = document.getElementById("respuesta");
 const btnGuardar = document.getElementById("btn-guardar");
 const estado = document.getElementById("estado");
 const seccionPareja = document.getElementById("seccion-pareja");
-const tituloPareja = document.getElementById("titulo-pareja");
 const respuestaPareja = document.getElementById("respuesta-pareja");
 const btnSalir = document.getElementById("btn-salir");
 const contadorDias = document.getElementById("contador-dias");
+const jardin = document.getElementById("jardin");
+const jardinVacio = document.getElementById("jardin-vacio");
+const pestanas = document.getElementById("pestanas");
+const pestanaMia = document.getElementById("pestana-mia");
+const pestanaPareja = document.getElementById("pestana-pareja");
+const fechaHoy = document.getElementById("fecha-hoy");
 
 let usuario = null;       // la persona con sesión iniciada
 let numero = 0;           // número de la pregunta que se está mostrando
 let miRespuesta = null;   // mi respuesta guardada (o null si aún no respondo)
 let cerrada = false;      // true cuando ya respondimos los dos: ya no se puede editar
+let pestanaActual = "mia"; // "mia" o "pareja": qué respuesta se ve en la nube
 
 // Muestra un mensaje bajo la respuesta. tipo: "ok", "error", "cerrado" o nada (neutral)
 function ponerEstado(texto, tipo) {
   estado.textContent = texto;
   estado.className = "estado" + (tipo ? " estado--" + tipo : "");
 }
+
+// Mi respuesta y la de la pareja comparten el mismo espacio (así todo cabe
+// en la pantalla). Las pestañas siguen el patrón de accesibilidad de "tabs".
+function mostrarPestana(cual, enfocar = false) {
+  pestanaActual = cual;
+  const esMia = cual === "mia";
+  pestanaMia.setAttribute("aria-selected", String(esMia));
+  pestanaPareja.setAttribute("aria-selected", String(!esMia));
+  pestanaMia.tabIndex = esMia ? 0 : -1;
+  pestanaPareja.tabIndex = esMia ? -1 : 0;
+  formRespuesta.hidden = !esMia;
+  seccionPareja.hidden = esMia;
+  btnGuardar.hidden = !esMia || cerrada;
+  if (enfocar) (esMia ? pestanaMia : pestanaPareja).focus();
+}
+
+// Sin pregunta que responder: solo se ve el texto de la nube
+function ocultarRespuestas() {
+  pestanas.hidden = true;
+  formRespuesta.hidden = true;
+  seccionPareja.hidden = true;
+  btnGuardar.hidden = true;
+}
+
+pestanaMia.addEventListener("click", () => mostrarPestana("mia"));
+pestanaPareja.addEventListener("click", () => mostrarPestana("pareja"));
+pestanas.addEventListener("keydown", (e) => {
+  if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) {
+    e.preventDefault();
+    const cual = e.key === "Home" ? "mia" : e.key === "End" ? "pareja" : pestanaActual === "mia" ? "pareja" : "mia";
+    mostrarPestana(cual, true);
+  }
+});
 
 // Onda en el botón al guardar (como una gota que cae en un charco)
 function onda(boton) {
@@ -42,24 +81,70 @@ async function iniciar() {
 
   usuario = data.session.user;
   pintarTexto(saludo, ["Hola, ", mio(NOMBRES[usuario.email] || usuario.email)]);
+  fechaHoy.textContent = fechaLegible(hoyEnMexico());
   contenido.hidden = false;
 
-  await cargarPregunta();
-
+  // Días juntos: en pantalla solo el número; el lector de pantalla lee la frase completa
   const dias = diasJuntos();
-  contadorDias.textContent = "Llevamos " + dias + (dias === 1 ? " día" : " días") + " juntos";
+  contadorDias.textContent = dias;
+  contadorDias.dataset.cifras = String(dias).length;
+  contadorDias.setAttribute("aria-label", dias + (dias === 1 ? " día juntos" : " días juntos"));
 
+  await cargarPregunta();
+  await cargarJardin();
+
+  // El botón "Activar avisos" del prado (js/avisos.js); si falla, no pasa nada
+  prepararAvisos();
+
+  // Vistas previas sin guardar nada:
+  //   home.html?lluvia   → la lluvia completa, terminando con el arcoíris
+  //   home.html?arcoiris → solo el arcoíris, dibujándose
+  const parametros = new URLSearchParams(window.location.search);
+  if (parametros.has("lluvia")) {
+    await llover({ conArcoiris: true });
+  } else if (parametros.has("arcoiris")) {
+    mostrarArcoiris(true);
+  }
+}
+
+// Las flores (y el brote de mi respuesta, si la pareja aún no responde), en el
+// prado. Si falla, simplemente no se muestra.
+async function cargarJardin() {
+  const prueba = floresDePrueba();
+  let flores = prueba;
+  let brotes = [];
+  if (!prueba) {
+    try {
+      ({ flores, brotes } = await estadoDelJardin(usuario.id));
+    } catch (error) {
+      console.error(error.message);
+      return;
+    }
+  }
+
+  const numeros = [...flores, ...brotes].sort((a, b) => a - b);
+  jardinVacio.hidden = numeros.length > 0;
+  jardin.setAttribute("aria-label", contarJardin(flores.length, brotes.length) + " en el jardín");
+  // Las últimas flores que caben en una fila (el aria-label cuenta todas)
+  plantarJardin(jardin, numeros, {
+    // Hoy: un prado tranquilo, sin desplazarse; las demás flores están en Jardín
+    escala: 0.95,
+    fijo: true,
+    brotes: new Set(brotes),
+    // En modo de prueba brotan todas y no se recuerda nada
+    nuevas: prueba ? new Set(flores) : floresNuevas(usuario.id, flores),
+  });
 }
 
 async function cargarPregunta() {
   const hoy = numeroDePreguntaHoy();
   ponerEstado("");
+  if (!tormentaEnCurso()) ocultarArcoiris();
 
   if (hoy < 1) {
-    tituloPregunta.textContent = "Pregunta del día";
+    tituloPregunta.textContent = "";
     textoPregunta.textContent = "El diario empieza el " + fechaDePregunta(1) + ".";
-    formRespuesta.hidden = true;
-    seccionPareja.hidden = true;
+    ocultarRespuestas();
     return;
   }
 
@@ -70,8 +155,8 @@ async function cargarPregunta() {
 
   tituloPregunta.textContent =
     numero === hoy
-      ? "Pregunta de hoy · #" + numero
-      : "Pregunta #" + numero + " · " + fechaDePregunta(numero);
+      ? "Pregunta " + numero
+      : "Pregunta " + numero + ", del " + fechaDePregunta(numero);
 
   // 1) La pregunta
   const { data: pregunta, error: errPregunta } = await db
@@ -83,14 +168,14 @@ async function cargarPregunta() {
   if (errPregunta) {
     console.error(errPregunta.message);
     textoPregunta.textContent = "";
-    ponerEstado("No se pudo cargar la pregunta. Intenta de nuevo.", "error");
+    ocultarRespuestas();
+    ponerEstado("No se pudo cargar la pregunta. Recarga la página para intentarlo de nuevo.", "error");
     return;
   }
 
   if (!pregunta) {
     textoPregunta.textContent = "Todavía no hay pregunta para este día. ¡Hay que agregar más!";
-    formRespuesta.hidden = true;
-    seccionPareja.hidden = true;
+    ocultarRespuestas();
     return;
   }
 
@@ -105,7 +190,8 @@ async function cargarPregunta() {
 
   if (resp.error) {
     console.error(resp.error.message);
-    ponerEstado("No se pudieron cargar las respuestas.", "error");
+    ocultarRespuestas();
+    ponerEstado("No se pudieron cargar las respuestas. Recarga la página para intentarlo de nuevo.", "error");
     return;
   }
 
@@ -120,25 +206,23 @@ async function cargarPregunta() {
   // Si ya respondimos los dos, queda cerrada: así nadie cambia su respuesta
   // después de leer la del otro. (La base de datos también lo impide.)
   cerrada = Boolean(miRespuesta && respuestaDeLaPareja);
-  formRespuesta.hidden = false;
   campoRespuesta.value = miRespuesta ? miRespuesta.texto : "";
   campoRespuesta.readOnly = cerrada;
   formRespuesta.classList.toggle("respuesta-cerrada", cerrada);
-  btnGuardar.hidden = cerrada;
   btnGuardar.textContent = miRespuesta ? "Actualizar respuesta" : "Guardar respuesta";
 
   if (cerrada) {
-    borrarBorrador(claveBorrador(usuario.id, numero));
-    ponerEstado("Las dos respuestas están guardadas; ya no se pueden editar.", "cerrado");
+    borrarLocal(claveBorrador(usuario.id, numero));
+    ponerEstado("Respondieron los dos: las respuestas quedan cerradas.", "cerrado");
   } else {
     // Si quedó algo escrito sin guardar, lo recuperamos
-    const borrador = leerBorrador(claveBorrador(usuario.id, numero));
+    const borrador = leerLocal(claveBorrador(usuario.id, numero));
     if (borrador) campoRespuesta.value = borrador;
   }
 
   // La respuesta de la pareja
-  seccionPareja.hidden = false;
-  pintarTexto(tituloPareja, ["Respuesta de ", dePareja(nombrePareja)]);
+  pintarTexto(pestanaPareja, ["La de ", dePareja(nombrePareja)]);
+  pestanaPareja.classList.toggle("esperando", !respuestaDeLaPareja);
 
   respuestaPareja.classList.toggle("en-espera", !respuestaDeLaPareja);
 
@@ -153,12 +237,20 @@ async function cargarPregunta() {
   } else {
     pintarTexto(respuestaPareja, [dePareja(nombrePareja), " todavía no responde."]);
   }
+
+  // Si aún no respondo, se abre mi respuesta; si ya respondí, la de la pareja
+  pestanas.hidden = false;
+  mostrarPestana(miRespuesta ? "pareja" : "mia");
+
+  // El arcoíris se queda todo el día cuando ya respondí la pregunta de hoy
+  // (si está lloviendo, lo saca la propia tormenta al despejarse)
+  if (miRespuesta && numero === hoy && !tormentaEnCurso()) mostrarArcoiris(false);
 }
 
 // Cada vez que escribes, se guarda un borrador en este navegador
 campoRespuesta.addEventListener("input", () => {
   if (!usuario || !numero || cerrada) return;
-  guardarBorrador(claveBorrador(usuario.id, numero), campoRespuesta.value);
+  guardarLocal(claveBorrador(usuario.id, numero), campoRespuesta.value);
 });
 
 formRespuesta.addEventListener("submit", async (e) => {
@@ -202,11 +294,20 @@ formRespuesta.addEventListener("submit", async (e) => {
     return;
   }
 
-  borrarBorrador(claveBorrador(usuario.id, numero));
+  borrarLocal(claveBorrador(usuario.id, numero));
+
+  // Cada vez que guardas, llueve y se riega el jardín (unos 6 s, no se puede saltar).
+  // Mientras tanto, por debajo, se recarga la pregunta.
+  const lluvia = llover({ conArcoiris: numero === numeroDePreguntaHoy() });
   await cargarPregunta();
+  await lluvia;
+
+  // Después de la lluvia aparece el brote de mi respuesta o, si ya respondimos
+  // los dos, florece
+  await cargarJardin();
   ponerEstado(
     cerrada
-      ? "¡Guardado! Ya respondieron los dos, así que las respuestas quedan cerradas."
+      ? "¡Guardado! Respondieron los dos: las respuestas quedan cerradas."
       : "¡Guardado!",
     "ok"
   );

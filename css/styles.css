@@ -1,7 +1,9 @@
 /* =====================================================================
-   Lluvia — "una tarde de lluvia tranquila"
-   Colores: principal #21948A (agua) y complementario #94212B (rubí).
-   Se usa mucho más el agua; el rubí es solo un acento.
+   Lluvia — "un jardín bajo el cielo"
+   Cada página cabe en una sola pantalla, sin scroll: arriba el cielo
+   (en Hoy, el sol cuenta los días), en medio una nube con el contenido
+   y abajo un prado donde brota una flor por cada día que respondemos
+   los dos. El menú vive en el prado, al alcance del pulgar.
    Siempre en claro: no hay modo noche.
    El plan completo está en PLAN_DISENO.md
    ===================================================================== */
@@ -9,65 +11,116 @@
 /* ---------- Paleta y variables ---------- */
 
 :root {
-  /* Tonos del principal */
-  --agua-50: #F4FAF9;
-  --agua-100: #E4F2F1;
-  --agua-200: #C1E1DE;
-  --agua-300: #90CAC5;
-  --agua-400: #59AFA7;
-  --agua-500: #21948A; /* principal: solo decorativo o texto grande (contraste 3.7) */
-  --agua-600: #1A766E;
-  --agua-700: #145C56;
-  --agua-800: #0F433E;
-  --agua-900: #0A2C29;
+  /* Base: cielo, horizonte, nube, sol, prado y tinta */
+  --cielo-arriba: #2A6FB5;
+  --cielo-medio: #4A9AD8;
+  --cielo-abajo: #9AD6F4;
+  --nube: #FFFFFF;
+  --sol: #FFD45C;
+  --sol-halo: rgb(255 246 210 / 0.38); /* claro: el amarillo translúcido sobre azul se ve verdoso */
+  --sol-halo-suave: rgb(255 246 210 / 0.16);
+  /* El número blanco sobre el amarillo necesita una sombra dorada marcada para leerse */
+  --sombra-numero: 0 2px 0 rgb(176 108 0 / 0.75), 0 0 14px rgb(150 80 0 / 0.45);
+  --montana-lejos: #B4D3EE; /* más claras = más lejos */
+  --montana-cerca: #93BCE3;
+  --pasto-claro: #8ACB72;
+  --pasto: #5DB565;
+  --pasto-oscuro: #3E8E48;
+  --tinta: #13293F; /* texto dentro de las nubes: 14:1 */
 
-  /* Tonos del complementario */
-  --rubi-50: #F9F2F2;
-  --rubi-300: #CA9095;
-  --rubi-500: #94212B;
+  /* Tonos de azul para la interfaz */
+  --cielo-50: #EFF7FD;
+  --cielo-100: #DDEEFA;
+  --cielo-200: #B9DCF4;
+  --cielo-400: #4A9AD8;
+  --cielo-500: #2A6FB5; /* 5.2 con blanco */
+  --cielo-600: #1F5F9E; /* 6.6 con blanco */
+  --cielo-700: #174A7C; /* 9.1 con blanco */
+
+  /* Rosa flor: lo de la pareja */
+  --rosa-50: #FBF0F4;
+  --rosa-300: #E59BB9;
+  --rosa-500: #B8336A; /* 5.6 con blanco */
+
+  /* La lluvia y el arcoíris (al guardar la respuesta).
+     Mientras llueve, el paisaje toma estos colores (ver "El clima de tormenta"). */
+  --tormenta-cielo-arriba: #4B5E74;
+  --tormenta-cielo-medio: #6C7F93;
+  --tormenta-cielo-abajo: #9EADBC;
+  --tormenta-pasto: #4E9B57;        /* pasto mojado: un verde más profundo */
+  --tormenta-pasto-claro: #6FAE63;
+  --tormenta-pasto-oscuro: #357A3E;
+  --tormenta-montana-lejos: #C5CED8; /* las montañas se pierden en la neblina */
+  --tormenta-montana-cerca: #A9B6C4;
+  --nube-gris: #C9D2DC;              /* las nubes del fondo, nubladas */
+  --gota-lluvia: rgb(255 255 255 / 0.9);
+  --arcoiris-1: #F59A9A;
+  --arcoiris-2: #F8C08A;
+  --arcoiris-3: #F9E39A;
+  --arcoiris-4: #A8DDA0;
+  --arcoiris-5: #9CCBF2;
+  --arcoiris-6: #C3A8EA;
+
+  /* Flores */
+  --flor-blanca: #FFFFFF;
+  --flor-amarilla: #FFC93C;
+  --flor-naranja: #FF8A3D;
+  --flor-roja: #E5484D;
+  --flor-rosa: #F07AA8;
+  --flor-lila: #B48CE6;
+  --flor-lavanda: #8E6CCF;
+  --flor-celeste: #6EC1F0;
+  --flor-centro: #F5B300;
+  --flor-centro-oscuro: #5A3A22;
+  --flor-sombra: rgb(0 0 0 / 0.16);
+  --tallo: var(--pasto-oscuro);
+  --hoja: var(--pasto-claro); /* distinta del pasto, para que se vea sobre el prado */
 
   /* Colores con significado */
-  --fondo-arriba: #FFFFFF; /* el fondo es blanco: el agua queda para los detalles */
-  --fondo-abajo: #FFFFFF;
-  --superficie: #FFFFFF;
-  --borde-tarjeta: var(--agua-100);
-  --burbuja: var(--agua-50); /* respuestas ya escritas, en el historial y cerradas */
-  --texto: #1A1A1A; /* los textos son negros; el color solo remarca */
-  --texto-suave: #5E5E5E;
-  --titulo: #1A1A1A;
-  --etiqueta: var(--agua-600);
-  --borde: var(--agua-200);
-  --campo: #FFFFFF;
-  --campo-cerrado: var(--agua-50);
-  --boton: var(--agua-600);
-  --boton-hover: var(--agua-700);
+  --texto: var(--tinta);
+  --texto-suave: #52657A; /* 5.9 con blanco */
+  --texto-cielo: #FFFFFF; /* sobre el cielo, letras blancas (solo grandes) */
+  --sombra-texto: 0 1px 3px rgb(10 40 80 / 0.5);
+  --velo: rgb(23 74 124 / 0.8); /* fondo del menú: se lee sobre el pasto o una nube (≈5:1) */
+  --renglon: var(--cielo-100);
+  --borde: var(--cielo-200);
+  --boton: var(--cielo-600);
+  --boton-hover: var(--cielo-700);
   --boton-texto: #FFFFFF;
-  --enlace: var(--agua-600);
-  --foco: var(--agua-500);
-  --gota: var(--agua-300);
-  --punto-linea: var(--agua-400);
-  --acento: var(--rubi-500);
-  --acento-suave: var(--rubi-300);
+  --enlace: var(--cielo-600);
+  --foco: var(--cielo-500);
+  --foco-cielo: var(--sol); /* aro de foco sobre el cielo y el prado */
+  --gota: #FFFFFF;
+  --gota-nube: var(--cielo-400);
 
-  /* Lo propio es agua; lo de la pareja es rubí */
-  --mio: var(--agua-600);
-  --mio-intenso: var(--agua-500); /* solo en texto grande (contraste 3.7) */
-  --mio-suave: var(--agua-300);
-  --pareja: var(--rubi-500);
-  --pareja-suave: var(--rubi-300);
-  --pareja-fondo: var(--rubi-50);
-  --error-fondo: var(--rubi-50);
-  --sombra: 0 8px 30px rgb(33 148 138 / 0.08), 0 1px 3px rgb(33 148 138 / 0.05);
+  /* Lo propio es azul; lo de la pareja es rosa */
+  --mio: var(--cielo-600);
+  --mio-suave: var(--cielo-200);
+  --mio-cielo: var(--sol); /* lo propio cuando está sobre el cielo */
+  --pareja: var(--rosa-500);
+  --pareja-suave: var(--rosa-300);
+  --pareja-fondo: var(--rosa-50);
+  --error-fondo: var(--rosa-50);
 
-  /* Letras */
-  --letra-titulo: "Fraunces", Georgia, "Times New Roman", serif;
-  --letra-texto: "Nunito", "Segoe UI", system-ui, sans-serif;
+  /* Sombras: las nubes proyectan una sombra azul, nunca gris */
+  --sombra-nube: 0 18px 40px -12px rgb(20 60 110 / 0.35);
+  --sombra-baja: 0 6px 18px -6px rgb(20 60 110 / 0.3);
 
-  /* Formas y medidas */
-  --radio-tarjeta: 24px;
-  --radio-campo: 16px;
-  --radio-pildora: 999px;
-  --ancho: 640px;
+  /* Letras: Young Serif (cuento ilustrado) y Atkinson Hyperlegible (leer y escribir) */
+  --letra-titulo: "Young Serif", Georgia, "Times New Roman", serif;
+  --letra-texto: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+
+  /* Escala tipográfica clásica */
+  --t-pequena: 14px;
+  --t-texto: 18px;
+  --t-media: 21px;
+  --t-grande: 24px;
+  --t-titulo: 36px;
+
+  /* Medidas de la pantalla */
+  --ancho: 620px;
+  --alto-colinas: 64px;
+  --alto-prado: clamp(200px, 30svh, 340px); /* colinas incluidas */
 
   /* Siempre en claro, aunque el móvil o el ordenador estén en modo oscuro */
   color-scheme: light;
@@ -87,24 +140,12 @@ html {
 
 body {
   margin: 0;
-  min-height: 100vh;
-  min-height: 100svh;
+  overflow: hidden; /* sin scroll: todo cabe en la pantalla */
   font-family: var(--letra-texto);
-  font-size: 17px;
-  line-height: 1.5;
+  font-size: var(--t-texto);
+  line-height: 1.55;
   color: var(--texto);
-  background-color: var(--fondo-arriba);
-  background-image: linear-gradient(180deg, var(--fondo-arriba) 0%, var(--fondo-abajo) 100%);
-  background-attachment: fixed;
-}
-
-main {
-  position: relative; /* por encima de las gotas */
-  z-index: 1;
-  width: 100%;
-  max-width: var(--ancho);
-  margin: 0 auto;
-  padding: 32px 16px 48px;
+  background-color: var(--pasto); /* si la barra del navegador se esconde, abajo sigue el prado */
 }
 
 h1,
@@ -112,10 +153,8 @@ h2,
 h3 {
   margin: 0;
   font-family: var(--letra-titulo);
-  font-weight: 500;
-  font-variation-settings: "SOFT" 100;
-  color: var(--titulo);
-  line-height: 1.25;
+  font-weight: 400;
+  line-height: 1.2;
 }
 
 p {
@@ -136,44 +175,448 @@ a {
   display: none !important;
 }
 
-/* ---------- Tarjeta ---------- */
+/* Visible solo para lectores de pantalla */
+.solo-lectores {
+  position: absolute;
+  top: 0;
+  left: 0; /* arriba del todo: así no alarga la página */
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
 
-.tarjeta {
-  background: var(--superficie);
-  border: 1px solid var(--borde-tarjeta);
-  border-radius: var(--radio-tarjeta);
-  box-shadow: var(--sombra);
-  padding: 24px 20px;
-  margin-bottom: 20px;
-  animation: aparecer 0.4s ease-out both;
+button {
+  font: inherit;
+}
+
+/* Cada página ocupa exactamente la pantalla: contenido arriba, prado abajo */
+.pagina {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100svh;
+}
+
+main {
+  position: relative;
+  z-index: 2; /* por delante del prado: las flores altas quedan detrás de la nube */
+  flex: 1;
+  min-height: 0; /* deja que lo de dentro se encoja en vez de desbordar */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 20px 16px 14px;
+}
+
+/* En pantallas muy bajitas (un móvil en horizontal) sí se permite el scroll */
+@media (max-height: 520px) {
+  body { overflow: auto; }
+  .pagina { height: auto; min-height: 100svh; }
+}
+
+/* ---------- Cielo (fijo, detrás de todo) ---------- */
+
+.cielo {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--cielo-arriba) 0%, var(--cielo-medio) 55%, var(--cielo-abajo) 100%);
+}
+
+/* El sol: amarillo liso con dos halos claros */
+.sol {
+  border-radius: 50%;
+  background: var(--sol);
+  box-shadow: 0 0 0 14px var(--sol-halo), 0 0 0 32px var(--sol-halo-suave);
+}
+
+/* Asoma por la esquina de arriba a la izquierda: arriba a la derecha va el menú */
+.sol--fondo {
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  width: 150px;
+  height: 150px;
+}
+
+@media (min-width: 1000px) {
+  .sol--fondo {
+    top: 40px;
+    left: 8%;
+    width: 130px;
+    height: 130px;
+  }
+}
+
+/* En el login no hay menú: el sol asoma por la derecha y deja libre la marca */
+.sol--derecha {
+  left: auto;
+  right: -40px;
+}
+
+@media (min-width: 1000px) {
+  .sol--derecha {
+    left: auto;
+    right: 8%;
+  }
+}
+
+/* Nubes: una píldora con dos bultos, que cruzan el cielo muy despacio */
+.cielo .nube {
+  position: absolute;
+  left: 0;
+  width: 150px;
+  height: 46px;
+  border-radius: 999px;
+  background: var(--nube);
+  animation: deriva var(--duracion, 120s) linear infinite;
+  /* --reloj (lo pone el <head>) hace que sigan su camino al cambiar de página */
+  animation-delay: calc(var(--retraso, 0s) - var(--reloj, 0s));
+}
+
+.cielo .nube::before,
+.cielo .nube::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.cielo .nube::before {
+  left: 22px;
+  top: -26px;
+  width: 58px;
+  height: 58px;
+}
+
+.cielo .nube::after {
+  left: 60px;
+  top: -40px;
+  width: 74px;
+  height: 74px;
+}
+
+.nube--1 { top: 24%; opacity: 0.9;  --duracion: 130s; --retraso: -40s;  --quieta: 6vw; }
+.nube--2 { top: 42%; opacity: 0.55; --duracion: 160s; --retraso: -100s; --quieta: 64vw; scale: 0.7; }
+.nube--3 { top: 58%; opacity: 0.7;  --duracion: 145s; --retraso: -70s;  --quieta: 32vw; scale: 0.85; }
+
+@keyframes deriva {
+  from { translate: -240px 0; }
+  to { translate: calc(100vw + 60px) 0; }
+}
+
+/* ---------- Cabecera ---------- */
+/* El menú arriba a la derecha; debajo, el título alineado a la derecha.
+   En Hoy, el sol ocupa la izquierda de las dos filas. */
+
+.cabecera {
+  flex: none;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  column-gap: 12px;
+  margin-bottom: 14px;
+}
+
+.cabecera .nav {
+  position: relative;
+  z-index: 1; /* por delante del halo del sol */
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: end;
+}
+
+.cabecera__texto {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  padding-top: 14px;
+  text-align: right;
+}
+
+.cabecera h1 {
+  font-size: clamp(28px, 8vw, var(--t-titulo));
+  color: var(--texto-cielo);
+  text-shadow: var(--sombra-texto);
+}
+
+.fecha {
+  margin-top: 4px;
+  color: var(--texto-cielo);
+  font-size: var(--t-texto);
+  font-weight: 700;
+  line-height: 1.4;
+  text-shadow: var(--sombra-texto);
+}
+
+.fecha::first-letter {
+  text-transform: uppercase;
+}
+
+/* El sol de Hoy cuenta los días juntos: solo el número, en blanco.
+   Su parte de abajo queda detrás de la nube de la pregunta. */
+.sol--dias {
+  --tam: clamp(120px, min(38vw, 21svh), 190px);
+  position: relative;
+  z-index: 0;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: var(--tam);
+  height: var(--tam);
+  margin: 2px 0 calc(var(--tam) * -0.3) 4px;
+  padding-bottom: calc(var(--tam) * 0.1); /* el número un poco arriba, lejos de la nube */
+  color: var(--texto-cielo);
+  font-family: var(--letra-titulo);
+  font-size: calc(var(--tam) * 0.4);
+  line-height: 1;
+  text-shadow: var(--sombra-numero);
+  animation: amanecer 1.4s cubic-bezier(0.2, 0.8, 0.3, 1) backwards; /* backwards: al terminar no fija su posición, así puede esconderse cuando llueve */
+}
+
+.sol--dias:empty {
+  visibility: hidden;
+}
+
+.sol--dias[data-cifras="3"] { font-size: calc(var(--tam) * 0.32); }
+.sol--dias[data-cifras="4"] { font-size: calc(var(--tam) * 0.25); }
+
+/* El único momento coreografiado: al abrir, sale el sol */
+@keyframes amanecer {
+  from {
+    translate: 0 40px;
+    opacity: 0;
+    box-shadow: 0 0 0 0 var(--sol-halo), 0 0 0 0 var(--sol-halo-suave);
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+    box-shadow: 0 0 0 14px var(--sol-halo), 0 0 0 32px var(--sol-halo-suave);
+  }
+}
+
+/* ---------- La nube de la pregunta ---------- */
+/* El panel principal tiene forma de nube: dos bultos asoman por arriba.
+   Ocupa todo el alto libre; lo que sobra se encoge dentro (los renglones). */
+
+.nube-pregunta {
+  position: relative;
+  z-index: 1; /* por delante del sol */
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin-top: 26px;
+  padding: 22px 20px 18px;
+  border-radius: 30px;
+  background: var(--nube);
+  box-shadow: var(--sombra-nube);
+}
+
+.nube-pregunta::before,
+.nube-pregunta::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  background: var(--nube);
+}
+
+/* Los bultos van a la izquierda: tapan la parte de abajo del sol */
+.nube-pregunta::before {
+  left: 7%;
+  top: -26px;
+  width: 76px;
+  height: 76px;
+}
+
+.nube-pregunta::after {
+  left: calc(7% + 54px);
+  top: -38px;
+  width: 100px;
+  height: 100px;
 }
 
 @media (min-width: 600px) {
-  .tarjeta {
-    padding: 32px;
+  .nube-pregunta {
+    padding: 28px 32px 22px;
   }
 }
 
-/* Aparecen una tras otra, con calma */
-.tarjeta:nth-of-type(2) { animation-delay: 0.08s; }
-.tarjeta:nth-of-type(3) { animation-delay: 0.16s; }
-.tarjeta:nth-of-type(4) { animation-delay: 0.24s; }
+.numero-pregunta {
+  flex: none;
+  margin-bottom: 6px;
+  color: var(--cielo-600);
+  font-size: var(--t-pequena);
+  font-weight: 700;
+}
 
-@keyframes aparecer {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+.pregunta {
+  flex: none;
+  margin-bottom: 14px;
+  font-size: clamp(22px, min(6.4vw, 3.9svh), var(--t-titulo));
+  line-height: 1.18;
+  color: var(--tinta);
+  text-wrap: pretty;
+}
+
+/* ---------- Pestañas: tu respuesta / la de la pareja ---------- */
+
+.pestanas {
+  flex: none;
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.pestana {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--texto-suave);
+  font-size: var(--t-pequena);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pestana[aria-selected="true"] {
+  border-color: var(--mio-suave);
+  background: var(--cielo-50);
+  color: var(--mio);
+}
+
+/* Una gota azul junto al nombre de la pareja (espera mientras no responde) */
+.pestana--pareja::before {
+  content: "";
+  flex: none;
+  margin-right: 7px;
+  width: 9px;
+  height: 9px;
+  border-radius: 0 50% 50% 50%;
+  rotate: 45deg;
+  background: var(--gota-nube);
+}
+
+.pestana--pareja.esperando::before {
+  animation: esperar 2.4s ease-in-out infinite;
+}
+
+@keyframes esperar {
+  0%, 100% { translate: 0 0; opacity: 1; }
+  50% { translate: 0 3px; opacity: 0.5; }
+}
+
+/* El panel ocupa el espacio que queda; si el texto es largo, se desplaza dentro */
+.panel {
+  flex: 1;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Renglones de cuaderno ---------- */
+
+.renglones {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0 4px;
+  overflow-y: auto;
+  line-height: 32px;
+  background-image: linear-gradient(transparent 30px, var(--renglon) 30px, var(--renglon) 32px);
+  background-size: 100% 32px;
+  background-attachment: local;
+}
+
+.renglones--pareja {
+  white-space: pre-wrap; /* respeta los saltos de línea */
+}
+
+textarea.renglones {
+  display: block;
+  width: 100%;
+  font: inherit;
+  line-height: 32px;
+  color: var(--texto);
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  resize: none;
+}
+
+textarea.renglones:focus {
+  outline: none;
+  --renglon: var(--cielo-200);
+}
+
+.respuesta-cerrada textarea.renglones {
+  cursor: default;
+}
+
+.en-espera {
+  font-style: italic;
+  color: var(--texto-suave);
+}
+
+/* ---------- Formularios (login) ---------- */
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: var(--t-pequena);
+  font-weight: 700;
+  color: var(--texto-suave);
+}
+
+input {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  font: inherit;
+  color: var(--texto);
+  background: var(--nube);
+  border: 2px solid var(--borde);
+  border-radius: 14px;
+  transition: border-color 0.2s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--foco);
 }
 
 /* ---------- Botones ---------- */
 
-button {
-  font: inherit;
+.acciones {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.acciones .estado {
+  flex: 1;
+}
+
+.acciones:not(:has(.btn:not([hidden]))):not(:has(.estado:not(:empty))) {
+  display: none;
 }
 
 .btn {
@@ -183,31 +626,23 @@ button {
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  padding: 12px 28px;
+  padding: 10px 24px;
   border: 0;
-  border-radius: var(--radio-pildora);
+  border-radius: 999px;
   background: var(--boton);
   color: var(--boton-texto);
   font-weight: 700;
-  letter-spacing: 0.01em;
   cursor: pointer;
-  transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  transition: background-color 0.2s ease;
 }
 
 .btn:hover {
   background: var(--boton-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgb(20 92 86 / 0.18);
-}
-
-.btn:active {
-  transform: none;
 }
 
 .btn:disabled {
   opacity: 0.65;
   cursor: progress;
-  transform: none;
 }
 
 /* Onda al guardar: como una gota que cae en un charco */
@@ -226,119 +661,58 @@ button {
 }
 
 @keyframes onda {
-  from {
-    transform: scale(0);
-    opacity: 1;
-  }
-  to {
-    transform: scale(12);
-    opacity: 0;
-  }
+  from { transform: scale(0); opacity: 1; }
+  to { transform: scale(12); opacity: 0; }
 }
 
 .btn--ancho {
   width: 100%;
 }
 
-/* Botón discreto: "Cerrar sesión" */
-.btn-texto {
-  display: block;
+/* Cerrar sesión: discreto, en el prado */
+.btn-salir {
   min-height: 44px;
-  margin: 8px auto 0;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border: 0;
-  border-radius: var(--radio-pildora);
+  border-radius: 999px;
   background: transparent;
-  color: var(--texto-suave);
-  font-weight: 600;
+  color: var(--texto-cielo);
+  font-size: var(--t-pequena);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-shadow: 0 1px 2px rgb(20 60 30 / 0.6);
   cursor: pointer;
-  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-.btn-texto:hover {
-  background: var(--burbuja);
-  color: var(--titulo);
+.btn-salir:hover {
+  background: rgb(255 255 255 / 0.15);
 }
 
 /* Enlace con forma de píldora pequeña ("Responder") */
 .btn-mini {
   display: inline-flex;
   align-items: center;
-  min-height: 36px;
+  min-height: 38px;
   padding: 6px 16px;
-  border-radius: var(--radio-pildora);
+  border-radius: 999px;
   background: var(--boton);
   color: var(--boton-texto);
   font-weight: 700;
-  font-size: 15px;
+  font-size: var(--t-pequena);
   text-decoration: none;
-  transition: background-color 0.25s ease;
 }
 
 .btn-mini:hover {
   background: var(--boton-hover);
 }
 
-/* ---------- Formularios ---------- */
-
-label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--texto-suave);
-}
-
-input,
-textarea {
-  display: block;
-  width: 100%;
-  margin-bottom: 18px;
-  padding: 12px 16px;
-  font: inherit;
-  color: var(--texto);
-  background: var(--campo);
-  border: 1.5px solid var(--borde);
-  border-radius: var(--radio-campo);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
-}
-
-input {
-  min-height: 48px;
-}
-
-textarea {
-  min-height: 160px;
-  line-height: 1.6;
-  resize: vertical;
-  field-sizing: content; /* crece con el texto donde el navegador lo permite */
-}
-
-input:focus,
-textarea:focus {
-  outline: none;
-  border-color: var(--foco);
-  box-shadow: 0 0 0 4px rgb(33 148 138 / 0.15);
-}
-
-/* Respuesta cerrada: se lee como una carta, sin caja */
-.respuesta-cerrada textarea {
-  background: var(--campo-cerrado);
-  border-color: transparent;
-  resize: none;
-  cursor: default;
-}
-
-.respuesta-cerrada textarea:focus {
-  box-shadow: none;
-}
-
 /* ---------- Mensajes de estado ---------- */
 
 .estado {
-  margin-top: 14px;
-  font-weight: 600;
-  font-size: 15px;
+  font-size: var(--t-pequena);
+  font-weight: 700;
+  line-height: 1.35;
   color: var(--texto-suave);
 }
 
@@ -346,6 +720,7 @@ textarea:focus {
   display: none;
 }
 
+/* "¡Guardado!" responde a la acción: aparece con una gotita */
 .estado--ok {
   display: flex;
   align-items: center;
@@ -354,202 +729,35 @@ textarea:focus {
   animation: aparecer 0.3s ease-out both;
 }
 
-/* Una gotita antes del "¡Guardado!" */
 .estado--ok::before {
   content: "";
   flex: none;
   width: 10px;
   height: 10px;
   border-radius: 0 50% 50% 50%;
-  transform: rotate(45deg);
-  background: var(--agua-500);
+  rotate: 45deg;
+  background: var(--gota-nube);
+}
+
+@keyframes aparecer {
+  from { opacity: 0; translate: 0 4px; }
+  to { opacity: 1; translate: 0 0; }
 }
 
 .estado--error {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 12px;
   background: var(--error-fondo);
-  color: var(--acento);
+  color: var(--pareja);
 }
 
 .estado--cerrado {
-  display: inline-block;
-  padding: 8px 14px;
-  border-radius: 14px;
-  background: var(--campo-cerrado);
-  color: var(--etiqueta);
-}
-
-/* ---------- Gotas de lluvia (fondo) ---------- */
-
-.lluvia {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.gota {
-  position: absolute;
-  top: -40px;
-  width: 10px;
-  height: 10px;
-  border-radius: 0 50% 50% 50%; /* con el giro queda en forma de gota */
-  background: var(--gota);
-  opacity: 0.25;
-  animation: caer 16s linear infinite;
-}
-
-.gota:nth-child(1) { left: 8%;  animation-duration: 15s; animation-delay: -2s;  opacity: 0.22; }
-.gota:nth-child(2) { left: 22%; animation-duration: 19s; animation-delay: -9s;  opacity: 0.15; width: 8px; height: 8px; }
-.gota:nth-child(3) { left: 37%; animation-duration: 13s; animation-delay: -5s;  opacity: 0.28; }
-.gota:nth-child(4) { left: 53%; animation-duration: 18s; animation-delay: -13s; opacity: 0.18; width: 12px; height: 12px; }
-.gota:nth-child(5) { left: 68%; animation-duration: 14s; animation-delay: -7s;  opacity: 0.25; width: 8px; height: 8px; }
-.gota:nth-child(6) { left: 81%; animation-duration: 20s; animation-delay: -1s;  opacity: 0.2; }
-.gota:nth-child(7) { left: 93%; animation-duration: 16s; animation-delay: -11s; opacity: 0.3; width: 9px; height: 9px; }
-
-@keyframes caer {
-  from {
-    transform: translateY(0) rotate(45deg);
-  }
-  to {
-    transform: translateY(calc(100vh + 80px)) rotate(45deg);
-  }
-}
-
-/* ---------- Cabecera y navegación ---------- */
-
-.cabecera {
-  margin-bottom: 20px;
-  animation: aparecer 0.4s ease-out both;
-}
-
-.cabecera h1 {
-  font-size: clamp(28px, 7vw, 36px);
-}
-
-.contador {
-  margin-top: 4px;
-  color: var(--texto-suave);
-  font-weight: 600;
-}
-
-.contador:empty {
-  display: none;
-}
-
-.contador::before {
-  content: "♥";
-  content: "♥" / ""; /* decorativo: los lectores de pantalla no lo leen */
-  margin-right: 6px;
-  color: var(--acento);
-}
-
-.nav {
-  display: flex;
-  gap: 4px;
-  width: fit-content;
-  margin-bottom: 24px;
-  padding: 4px;
-  border-radius: var(--radio-pildora);
-  background: var(--superficie);
-  border: 1px solid var(--borde-tarjeta);
-  box-shadow: var(--sombra);
-}
-
-.nav a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  padding: 8px 22px;
-  border-radius: var(--radio-pildora);
-  color: var(--texto-suave);
-  font-weight: 700;
-  text-decoration: none;
-  transition: background-color 0.25s ease, color 0.25s ease;
-}
-
-.nav a:hover {
-  color: var(--titulo);
-}
-
-.nav a[aria-current="page"] {
-  background: var(--boton);
-  color: var(--boton-texto);
-}
-
-/* ---------- Login ---------- */
-
-.pagina-login main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100vh;
-  min-height: 100svh;
-  max-width: 420px;
-}
-
-.marca {
-  margin-bottom: 24px;
-  text-align: center;
-  animation: aparecer 0.5s ease-out both;
-}
-
-.marca svg {
-  display: block;
-  width: 112px;
-  height: auto;
-  margin: 0 auto 8px;
-}
-
-.marca .nube {
-  fill: var(--agua-200);
-}
-
-.marca .gotita {
-  fill: var(--agua-500);
-  animation: gotear 3.2s ease-in-out infinite;
-}
-
-.marca .gotita:nth-of-type(2) { animation-delay: 0.6s; }
-.marca .gotita:nth-of-type(3) { animation-delay: 1.2s; }
-
-@keyframes gotear {
-  0%, 100% { transform: translateY(0); opacity: 1; }
-  50% { transform: translateY(4px); opacity: 0.6; }
-}
-
-.marca h1 {
-  font-size: 44px;
-  font-weight: 600;
-  color: var(--mio-intenso);
-}
-
-.lema {
-  margin-top: 6px;
-  color: var(--texto-suave);
-}
-
-#mensaje:empty {
-  display: none;
-}
-
-#mensaje {
-  margin-top: 16px;
-  text-align: center;
-  font-weight: 600;
-  font-size: 15px;
-  color: var(--texto-suave);
-}
-
-#mensaje.estado--error {
-  text-align: left;
+  font-weight: 400;
+  font-style: italic;
 }
 
 /* ---------- Lo mío y lo de la pareja ---------- */
-/* Regla: todo lo propio se remarca en agua, todo lo de la pareja en rubí.
-   El resto del texto es negro. */
+/* Regla: todo lo propio se remarca en azul, todo lo de la pareja en rosa. */
 
 .mio {
   color: var(--mio);
@@ -561,132 +769,422 @@ textarea:focus {
   font-weight: 700;
 }
 
-/* En los títulos grandes el agua puede ser la intensa */
-h1 .mio {
-  color: var(--mio-intenso);
+/* Sobre el cielo, lo propio brilla en amarillo sol */
+.cabecera h1 .mio {
+  color: var(--mio-cielo);
   font-weight: inherit;
 }
 
-h2 .de-pareja,
-h3 .de-pareja {
-  font-weight: inherit;
+/* En las pestañas todo va en azul: el nombre hereda el color de la pestaña */
+.pestana .de-pareja {
+  color: inherit;
+  margin-left: 0.25em;
 }
 
-/* ---------- Hoy ---------- */
+/* ---------- Mensajes sueltos (cargando, vacío, error) ---------- */
 
-.etiqueta {
-  margin-bottom: 10px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--etiqueta);
-}
-
-.pregunta {
-  margin-bottom: 24px;
-  font-size: clamp(24px, 6vw, 28px);
-}
-
-.pareja {
-  border-left: 4px solid var(--pareja-suave);
-}
-
-.pareja h2 {
-  margin-bottom: 12px;
-  font-size: 20px;
-}
-
-.texto-respuesta {
-  line-height: 1.6;
-  white-space: pre-wrap; /* respeta los saltos de línea */
-}
-
-/* Mientras se espera la respuesta de la pareja: una gota granate que espera */
-.en-espera {
-  position: relative;
-  padding-left: 24px;
-  font-style: italic;
+.aviso {
+  padding: 16px 20px;
+  border-radius: 22px;
+  background: rgb(255 255 255 / 0.92);
   color: var(--texto-suave);
+  box-shadow: var(--sombra-baja);
 }
 
-.en-espera::before {
-  content: "";
+/* ---------- El prado (final de cada página) ---------- */
+
+.prado {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  height: var(--alto-prado);
+}
+
+/* Montañas lejanas: asoman por detrás de las colinas */
+.prado__montanas {
   position: absolute;
+  z-index: 0;
   left: 0;
-  top: 7px;
-  width: 12px;
-  height: 12px;
-  border-radius: 0 50% 50% 50%;
-  background: var(--pareja-suave);
-  transform: rotate(45deg);
-  animation: esperar 2.4s ease-in-out infinite;
+  bottom: calc(100% - var(--alto-colinas) * 0.55);
+  width: 100%;
+  height: clamp(70px, 14svh, 130px);
+  pointer-events: none;
 }
 
-@keyframes esperar {
-  0%, 100% { transform: translateY(0) rotate(45deg); opacity: 1; }
-  50% { transform: translateY(5px) rotate(45deg); opacity: 0.5; }
-}
+.montana--lejos { fill: var(--montana-lejos); }
+.montana--cerca { fill: var(--montana-cerca); }
 
-/* ---------- Historial ---------- */
-
-.pagina-historial {
-  --ancho: 760px;
-}
-
-.cabecera--historial {
-  margin-bottom: 20px;
-}
-
-.cabecera--historial h1 {
-  font-size: clamp(28px, 7vw, 36px);
-}
-
-.linea-tiempo {
-  color: var(--texto-suave);
-}
-
-/* La línea punteada solo aparece cuando hay días que unir */
-.linea-tiempo:has(.dia) {
+.prado__colinas {
   position: relative;
-  padding-left: 28px;
+  z-index: 1;
+  flex: none;
+  display: block;
+  width: 100%;
+  height: var(--alto-colinas);
+  margin-bottom: -1px; /* sin rendija entre la colina y el suelo */
 }
 
-.linea-tiempo:has(.dia)::before {
-  content: "";
+.colina--atras { fill: var(--pasto-claro); }
+.colina--frente { fill: var(--pasto); }
+
+.prado__suelo {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px max(10px, env(safe-area-inset-bottom));
+  background: var(--pasto);
+}
+
+/* Abajo a la izquierda: "Cerrar sesión" (y en Hoy, "Activar avisos") */
+.prado__pie {
+  gap: 4px;
+  position: relative;
+  z-index: 1000; /* por delante de las flores */
+  flex: none;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: auto;
+}
+
+/* El mensaje de los avisos va abajo, cerca de su botón y por delante de las flores */
+.prado__texto.prado__texto--avisos {
+  top: auto;
+  bottom: 56px;
+  translate: -50% 0;
+  z-index: 1001;
+  width: min(92%, 30em);
+  white-space: normal;
+  border-radius: 18px;
+}
+
+/* Textos sobre el pasto: en una píldora blanca, para que se lean */
+.prado__texto {
   position: absolute;
-  left: 8px;
-  top: 12px;
-  bottom: 12px;
-  border-left: 2px dotted var(--borde);
+  left: 50%;
+  top: 34%;
+  translate: -50% -50%;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.92);
+  color: var(--texto);
+  font-size: var(--t-pequena);
+  font-weight: 700;
+  text-align: center;
+  box-shadow: var(--sombra-baja);
+}
+
+/* ---------- Navegación (arriba a la derecha) ---------- */
+
+.nav {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--velo);
+  box-shadow: var(--sombra-baja);
+}
+
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 8px 13px;
+  font-size: 15px;
+  border-radius: 999px;
+  color: var(--texto-cielo);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  background: rgb(255 255 255 / 0.14);
+}
+
+.nav a[aria-current="page"] {
+  background: var(--nube);
+  color: var(--cielo-600);
+}
+
+.nav a:focus-visible,
+.btn-salir:focus-visible,
+.planta:focus-visible {
+  outline-color: var(--foco-cielo);
+}
+
+/* ---------- El jardín ---------- */
+
+/* Las flores crecen desde el prado: el jardín sube sobre las colinas
+   para que las de atrás asomen al cielo. Ocupa todo el ancho de la pantalla
+   y, si no caben, se desplaza en horizontal (solo el prado; la página no).
+   Los bordes se difuminan para que se note que hay más flores a los lados. */
+.jardin {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  margin: calc(var(--alto-colinas) * -1 - 24px) -16px 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+}
+
+.jardin:focus-visible {
+  outline-color: var(--foco-cielo);
+  outline-offset: -4px;
+}
+
+/* Hoy: unas pocas flores en una fila, sin desplazarse */
+.jardin--fijo {
+  overflow: hidden;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+/* Barra de scroll del prado y del historial: una píldora blanca sobre un riel azul */
+.jardin::-webkit-scrollbar,
+.hojas::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.jardin::-webkit-scrollbar-track,
+.hojas::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgb(23 74 124 / 0.35);
+}
+
+.jardin::-webkit-scrollbar-track {
+  margin-inline: 28px; /* fuera del difuminado de los bordes */
+}
+
+.hojas::-webkit-scrollbar-track {
+  margin-block: 16px;
+}
+
+.jardin::-webkit-scrollbar-thumb,
+.hojas::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: var(--nube) padding-box;
+}
+
+.jardin::-webkit-scrollbar-thumb:hover,
+.hojas::-webkit-scrollbar-thumb:hover {
+  background: var(--sol) padding-box;
+}
+
+/* Firefox no tiene los pseudo-elementos: usa los colores estándar.
+   (En Chrome 121+, scrollbar-color anularía el diseño de arriba.) */
+@supports not selector(::-webkit-scrollbar) {
+  .jardin,
+  .hojas {
+    scrollbar-width: thin;
+    scrollbar-color: var(--nube) rgb(23 74 124 / 0.35);
+  }
+}
+
+/* El lienzo mide lo que necesiten las flores (el ancho lo pone el JS) */
+.jardin__lienzo {
+  position: relative;
+  height: 100%;
+}
+
+/* Cada flor: se apoya en su punto del suelo (left/top los pone el JS) */
+.planta {
+  position: absolute;
+  display: block;
+  width: calc(44px * var(--escala, 1));
+  height: calc(132px * var(--escala, 1));
+  translate: -50% -100%;
+  transform-origin: 50% 100%;
+  text-decoration: none;
+  border-radius: 12px;
+}
+
+.planta svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: 50% 100%;
+  rotate: var(--giro, 0deg);
+  animation: mecer var(--mecer, 6s) ease-in-out infinite alternate;
+  animation-delay: var(--retraso, 0s);
+}
+
+@keyframes mecer {
+  from { rotate: calc(var(--giro, 0deg) - 2deg); }
+  to { rotate: calc(var(--giro, 0deg) + 2deg); }
+}
+
+/* La flor nueva brota desde el suelo */
+.planta--nueva {
+  animation: brotar 1.4s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+  animation-delay: var(--brote, 0s);
+}
+
+@keyframes brotar {
+  from { scale: 1 0; opacity: 0; }
+  30% { opacity: 1; }
+  to { scale: 1 1; opacity: 1; }
+}
+
+/* Al pasar o enfocar una flor del jardín, se ilumina un poco y se pone delante */
+a.planta svg {
+  transition: filter 0.25s ease, scale 0.25s ease;
+}
+
+a.planta:hover,
+a.planta:focus-visible {
+  z-index: 999 !important;
+}
+
+a.planta:hover svg,
+a.planta:focus-visible svg {
+  scale: 1.08;
+  filter: brightness(1.12) saturate(1.2) drop-shadow(0 0 6px rgb(255 255 255 / 0.75));
+}
+
+/* La etiqueta "Pregunta N, del …": flotante, fuera del prado (js/flores.js),
+   para que no la recorte el desplazamiento horizontal */
+.etiqueta-flor {
+  position: fixed;
+  z-index: 60;
+  max-width: calc(100vw - 16px);
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--nube);
+  box-shadow: var(--sombra-baja);
+  color: var(--texto);
+  font-size: var(--t-pequena);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+/* Partes de las flores (los colores vienen de las variables de arriba) */
+.flor .tallo {
+  fill: none;
+  stroke: var(--tallo);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+
+.flor .hoja { fill: var(--hoja); }
+.flor .caliz { fill: var(--pasto-oscuro); } /* las hojitas que envuelven el capullo */
+.flor .petalo { fill: var(--petalo); }
+.flor .centro { fill: var(--flor-centro); }
+.flor .centro--oscuro { fill: var(--flor-centro-oscuro); }
+
+.flor .detalle {
+  fill: none;
+  stroke: var(--flor-sombra);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.petalo--blanca { --petalo: var(--flor-blanca); }
+.petalo--amarilla { --petalo: var(--flor-amarilla); }
+.petalo--naranja { --petalo: var(--flor-naranja); }
+.petalo--roja { --petalo: var(--flor-roja); }
+.petalo--rosa { --petalo: var(--flor-rosa); }
+.petalo--lila { --petalo: var(--flor-lila); }
+.petalo--lavanda { --petalo: var(--flor-lavanda); }
+.petalo--celeste { --petalo: var(--flor-celeste); }
+
+/* Los pétalos blancos llevan un borde finito para no perderse */
+.petalo--blanca .petalo {
+  stroke: var(--flor-sombra);
+  stroke-width: 0.6;
+}
+
+/* En la página del jardín, el prado es el protagonista: ocupa casi todo */
+/* Jardín: el título va solo, grande y centrado en medio del cielo */
+.titulo-cielo {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: clamp(44px, 12vw, 72px);
+  color: var(--texto-cielo);
+  /* sombra amplia: se lee aunque pase una nube blanca por detrás */
+  text-shadow: var(--sombra-texto), 0 2px 18px rgb(10 40 80 / 0.45);
+}
+
+.pagina--jardin {
+  --ancho: 1100px; /* la cabecera acompaña al jardín, que ocupa todo el ancho */
+  --alto-prado: clamp(260px, 56svh, 600px);
+}
+
+/* ---------- Historial: se desplaza dentro de su zona ---------- */
+
+.pagina--historial {
+  --ancho: 760px;
+  --alto-prado: clamp(150px, 22svh, 220px);
+}
+
+/* La página no tiene scroll; la lista de días sí. Los bordes se difuminan
+   para que se note que hay más arriba o abajo. */
+.hojas {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 -10px;
+  padding: 10px 10px 28px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-mask-image: linear-gradient(transparent, #000 14px, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(transparent, #000 14px, #000 calc(100% - 28px), transparent);
 }
 
 .dia {
-  position: relative;
-  color: var(--texto);
+  flex: none;
+  padding: 20px 20px 18px;
+  border-radius: 26px;
+  background: var(--nube);
+  box-shadow: var(--sombra-baja);
 }
 
-/* El punto de la línea de tiempo es una gota */
-.dia::before {
-  content: "";
-  position: absolute;
-  left: -25px;
-  top: 30px;
-  width: 12px;
-  height: 12px;
-  border-radius: 0 50% 50% 50%;
-  transform: rotate(45deg);
-  background: var(--punto-linea);
+/* Las hojas no van en columna perfecta: se alternan un poco, como nubes */
+.dia:nth-child(odd) { margin-right: 18px; }
+.dia:nth-child(even) { margin-left: 18px; }
+
+@media (min-width: 600px) {
+  .dia {
+    padding: 24px 28px 22px;
+  }
+
+  .dia:nth-child(odd) { margin-right: 44px; }
+  .dia:nth-child(even) { margin-left: 44px; }
 }
 
-.dia h3 {
-  margin-bottom: 16px;
-  font-size: 21px;
+.dia .numero-pregunta {
+  margin-bottom: 4px;
+}
+
+.dia h2 {
+  flex: none;
+  margin-bottom: 14px;
+  font-size: clamp(21px, min(6vw, 3.6svh), var(--t-grande));
+  line-height: 1.25;
+  text-wrap: pretty;
 }
 
 .respuestas {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 @media (min-width: 600px) {
@@ -696,15 +1194,20 @@ h3 .de-pareja {
 }
 
 .respuesta {
-  padding: 14px 16px;
-  border-radius: var(--radio-campo);
-  background: var(--burbuja);
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: var(--cielo-50);
 }
 
 .respuesta strong {
   display: block;
-  margin-bottom: 4px;
-  font-size: 15px;
+  margin-bottom: 2px;
+  font-size: var(--t-pequena);
+}
+
+.respuesta p {
+  line-height: 1.55;
+  white-space: pre-wrap;
 }
 
 .respuesta--mia {
@@ -713,11 +1216,6 @@ h3 .de-pareja {
 
 .respuesta--mia strong {
   color: var(--mio);
-}
-
-.respuesta p {
-  line-height: 1.6;
-  white-space: pre-wrap;
 }
 
 .respuesta--pareja {
@@ -735,12 +1233,481 @@ h3 .de-pareja {
   align-items: flex-start;
   gap: 10px;
   background: transparent;
-  border: 1.5px dashed var(--borde);
+  border: 2px dashed var(--borde);
   color: var(--texto-suave);
 }
 
 .respuesta--pendiente p {
   font-style: italic;
+}
+
+/* ---------- Login ---------- */
+
+.pagina--login {
+  --alto-prado: clamp(150px, 26svh, 280px);
+}
+
+.pagina--login main {
+  justify-content: center;
+  max-width: 420px;
+}
+
+.marca {
+  flex: none;
+  text-align: left;
+}
+
+.marca svg {
+  display: block;
+  width: 88px;
+  height: auto;
+  margin: 0 0 2px -6px;
+}
+
+.marca__nube {
+  fill: var(--nube);
+}
+
+.marca__gota {
+  fill: var(--cielo-100);
+}
+
+.marca h1 {
+  font-size: clamp(44px, 8svh, 60px);
+  line-height: 1;
+  color: var(--texto-cielo);
+  text-shadow: var(--sombra-texto);
+}
+
+.lema {
+  max-width: 22em;
+  margin: 8px 0 0;
+  color: var(--texto-cielo);
+  font-size: var(--t-texto);
+  font-weight: 700;
+  text-shadow: var(--sombra-texto);
+}
+
+/* El formulario del login también es una nube, pero no se estira */
+.pagina--login .nube-pregunta {
+  flex: none;
+  display: block;
+  margin-top: 46px;
+}
+
+.pagina--login .nube-pregunta::before { right: auto; left: 14%; }
+.pagina--login .nube-pregunta::after { right: auto; left: calc(14% + 54px); }
+
+#mensaje:empty {
+  display: none;
+}
+
+#mensaje {
+  margin-top: 14px;
+  text-align: center;
+  font-size: var(--t-pequena);
+  font-weight: 700;
+  color: var(--texto-suave);
+}
+
+#mensaje.estado--error {
+  text-align: left;
+  color: var(--pareja);
+}
+
+@media (max-height: 640px) {
+  .marca svg { display: none; }
+  .pagina--login .nube-pregunta { margin-top: 36px; }
+}
+
+/* ---------- La lluvia que riega el jardín (js/tormenta.js) ---------- */
+/* Fases en <html>: .nublando (cambia el clima y el sol se esconde tras la nube),
+   .lloviendo (caen las gotas y las flores se mecen) y .despejando
+   (se van las nubes y se dibuja el arcoíris). */
+
+/* El arcoíris: un arco muy ancho que asoma por encima de la nube de la pregunta */
+.arcoiris {
+  position: absolute;
+  left: 50%;
+  top: var(--arcoiris-top, 30%);
+  width: min(160vw, 1500px);
+  height: auto;
+  translate: -50% 0;
+  opacity: 0.8;
+  overflow: visible;
+}
+
+/* En Jardín el arco apoya las patas en el prado: algo más estrecho */
+.arcoiris[data-lugar="sobre-montanas"] {
+  width: min(120vw, 1100px, 95svh); /* que la cima no se salga en pantallas anchas y bajas */
+}
+
+.arcoiris__banda {
+  fill: none;
+  stroke-width: 14;
+}
+
+.arcoiris__banda:nth-child(1) { stroke: var(--arcoiris-1); }
+.arcoiris__banda:nth-child(2) { stroke: var(--arcoiris-2); }
+.arcoiris__banda:nth-child(3) { stroke: var(--arcoiris-3); }
+.arcoiris__banda:nth-child(4) { stroke: var(--arcoiris-4); }
+.arcoiris__banda:nth-child(5) { stroke: var(--arcoiris-5); }
+.arcoiris__banda:nth-child(6) { stroke: var(--arcoiris-6); }
+
+/* Después de la lluvia, el arcoíris se dibuja de izquierda a derecha */
+.arcoiris.dibujando .arcoiris__banda {
+  stroke-dasharray: 1;
+  animation: dibujar-arcoiris 1.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: calc(var(--i) * 0.07s);
+}
+
+@keyframes dibujar-arcoiris {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* El clima de tormenta: cambia el paisaje, no la pantalla.
+   El cielo se oscurece, las nubes del fondo se vuelven grises, el pasto se ve
+   mojado y las montañas se pierden en la neblina. Las tarjetas siguen blancas.
+   (Se usan transiciones de fill/background/opacidad, que funcionan en todos
+   los navegadores; las transiciones de variables CSS no son fiables.) */
+
+/* El cielo de tormenta es una capa encima del cielo azul que aparece poco a poco */
+.cielo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--tormenta-cielo-arriba) 0%, var(--tormenta-cielo-medio) 55%, var(--tormenta-cielo-abajo) 100%);
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+
+.nublando .cielo::before,
+.lloviendo .cielo::before {
+  opacity: 1;
+}
+
+/* El pasto, las colinas, las montañas y los tallos toman sus colores de tormenta */
+body,
+.prado__suelo {
+  transition: background-color 1.4s ease;
+}
+
+:is(.colina--atras, .colina--frente, .montana--lejos, .montana--cerca, .flor .hoja) {
+  transition: fill 1.4s ease;
+}
+
+.flor .tallo {
+  transition: stroke 1.4s ease;
+}
+
+.nublando,
+.lloviendo {
+  --pasto: var(--tormenta-pasto);
+  --pasto-claro: var(--tormenta-pasto-claro);
+  --pasto-oscuro: var(--tormenta-pasto-oscuro);
+  --montana-lejos: var(--tormenta-montana-lejos);
+  --montana-cerca: var(--tormenta-montana-cerca);
+}
+
+.cielo .nube {
+  transition: background-color 1.4s ease;
+}
+
+.nublando .cielo .nube,
+.lloviendo .cielo .nube {
+  background-color: var(--nube-gris);
+}
+
+/* El sol se pone despacio detrás de la nube de la pregunta (recoge sus halos
+   y pierde brillo) y, al despejarse, vuelve a salir. Son animaciones, no
+   transiciones: así sustituyen al "amanecer" aunque esté a medias, y el sol
+   nunca desaparece de golpe. "html." gana en especificidad a ".llegando". */
+/* Después de la lluvia el sol ya está en su sitio: que no vuelva a "amanecer" */
+html.tras-lluvia .sol--dias {
+  animation: none;
+}
+
+html.nublando .sol--dias,
+html.lloviendo .sol--dias {
+  animation: ponerse-sol 1.6s cubic-bezier(0.45, 0, 0.35, 1) forwards;
+}
+
+html.despejando .sol--dias {
+  animation: salir-sol 1.4s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+@keyframes ponerse-sol {
+  from {
+    translate: 0 0;
+    filter: none;
+    box-shadow: 0 0 0 14px var(--sol-halo), 0 0 0 32px var(--sol-halo-suave);
+  }
+  to {
+    translate: 0 calc(var(--tam) * 1.15);
+    filter: brightness(0.8) saturate(0.6);
+    box-shadow: 0 0 0 0 var(--sol-halo), 0 0 0 0 var(--sol-halo-suave);
+  }
+}
+
+@keyframes salir-sol {
+  from {
+    translate: 0 calc(var(--tam) * 1.15);
+    filter: brightness(0.8) saturate(0.6);
+    box-shadow: 0 0 0 0 var(--sol-halo), 0 0 0 0 var(--sol-halo-suave);
+  }
+  to {
+    translate: 0 0;
+    filter: none;
+    box-shadow: 0 0 0 14px var(--sol-halo), 0 0 0 32px var(--sol-halo-suave);
+  }
+}
+
+/* Con "reducir movimiento" el sol no se mueve: solo se apaga y se enciende */
+@keyframes apagar-sol {
+  to { filter: brightness(0.8) saturate(0.6); }
+}
+
+/* La capa de la tormenta, por encima de todo (no se puede tocar nada mientras llueve) */
+.tormenta {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* La lluvia: gotas alargadas que caen inclinadas por el viento */
+.gota-lluvia {
+  position: absolute;
+  width: 3px;
+  height: 16px;
+  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%; /* una gota estirada al caer */
+  background: linear-gradient(180deg, transparent 0%, var(--gota-lluvia) 100%);
+  rotate: 12deg;
+  opacity: 0;
+  animation: caer-lluvia 0.8s linear infinite;
+  transition: opacity 0.4s ease;
+}
+
+.lloviendo .gota-lluvia {
+  opacity: 1;
+}
+
+/* Cae en la misma inclinación que la gota (12°: tan ≈ 0.21) */
+@keyframes caer-lluvia {
+  from { translate: 0 0; }
+  to { translate: calc(-0.21 * 90vh) 90vh; }
+}
+
+/* Al llegar al prado, cada gota deja una pequeña onda */
+.salpicadura {
+  position: absolute;
+  width: 22px;
+  height: 7px;
+  margin-left: -11px;
+  border: 1.5px solid var(--gota-lluvia);
+  border-radius: 50%;
+  opacity: 0;
+  animation: salpicar 0.9s ease-out infinite;
+  animation-play-state: paused;
+}
+
+.lloviendo .salpicadura {
+  animation-play-state: running;
+}
+
+@keyframes salpicar {
+  0% { scale: 0.2; opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { scale: 1.3; opacity: 0; }
+}
+
+/* Las flores, regadas, se mecen más */
+.lloviendo .planta svg {
+  animation-duration: 1.2s;
+}
+
+/* ---------- Bienvenida (la primera vez, js/intro.js) ---------- */
+/* Fases en <html>: .intro-a (primera frase), .intro-b (segunda), .intro-c
+   (brota la flor y tercera frase) y .intro-d (todo se desvanece). */
+
+/* Mientras dura, el formulario espera escondido */
+.pagina--login main {
+  transition: opacity 0.8s ease;
+}
+
+.con-intro .pagina--login main {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.intro__frase {
+  position: absolute;
+  left: 50%;
+  width: min(92vw, 30em);
+  translate: -50% 10px;
+  text-align: center;
+  color: var(--texto-cielo);
+  font-family: var(--letra-titulo);
+  text-shadow: var(--sombra-texto), 0 2px 18px rgb(10 40 80 / 0.45);
+  opacity: 0;
+  transition: opacity 0.9s ease, translate 0.9s ease;
+}
+
+.intro__frase--1 {
+  top: 24%;
+  font-size: clamp(34px, 9vw, 58px);
+  line-height: 1.1;
+}
+
+.intro__frase--2 {
+  top: calc(24% + clamp(48px, 12vw, 76px));
+  font-size: clamp(24px, 6vw, 36px);
+}
+
+.intro__frase--3 {
+  top: 30%;
+  font-size: clamp(24px, 6.4vw, 38px);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.intro-a .intro__frase--1,
+.intro-b .intro__frase--1,
+.intro-b .intro__frase--2,
+.intro-c .intro__frase--3 {
+  opacity: 1;
+  translate: -50% 0;
+}
+
+/* La flor que brota en el centro del prado */
+.intro__flor {
+  position: absolute;
+  inset: 0;
+  --escala: 1.4;
+  transition: opacity 0.8s ease;
+}
+
+.intro__flor .planta {
+  left: 50%;
+  top: 72%;
+  opacity: 0;
+}
+
+.intro-c .intro__flor .planta {
+  animation: brotar 1.6s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+}
+
+.intro-d .intro__flor {
+  opacity: 0;
+}
+
+.intro-d .intro__flor .planta {
+  opacity: 1;
+}
+
+/* "Saltar": discreto, abajo a la derecha, siempre disponible */
+.btn-saltar {
+  position: absolute;
+  right: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  min-height: 44px;
+  padding: 8px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--velo);
+  color: var(--texto-cielo);
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.btn-saltar:hover {
+  background: var(--cielo-700);
+}
+
+.btn-saltar:focus-visible {
+  outline-color: var(--foco-cielo);
+}
+
+/* ---------- Transiciones entre Hoy, Jardín e Historial ---------- */
+/* View Transitions entre páginas (Chrome/Edge 126+, Safari 18.2+; en los demás
+   navegadores se cambia de página sin animación). El cielo y el menú se quedan
+   quietos, el sol se desliza a su nuevo sitio, el prado sube o baja y el
+   contenido se funde con calma. */
+
+@view-transition {
+  navigation: auto;
+}
+
+.cielo { view-transition-name: cielo; }
+.sol--dias,
+.sol--fondo { view-transition-name: sol; }
+.nav { view-transition-name: menu; }
+.prado { view-transition-name: prado; }
+
+::view-transition-group(*) {
+  animation-duration: 0.8s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::view-transition-old(root) {
+  animation: salir-pagina 0.35s ease-in both;
+}
+
+::view-transition-new(root) {
+  animation: entrar-pagina 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) 0.2s both;
+}
+
+/* El prado cambia de alto sin estirar las flores */
+::view-transition-old(prado),
+::view-transition-new(prado) {
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+@keyframes salir-pagina {
+  to { opacity: 0; }
+}
+
+@keyframes entrar-pagina {
+  from { opacity: 0; translate: 0 10px; }
+}
+
+/* Si se llega con transición, el sol ya viene deslizándose: sin amanecer */
+.llegando .sol--dias {
+  animation: none;
+}
+
+/* ---------- Pantallas bajas ---------- */
+/* (al final, para que ganen a las reglas de arriba) */
+
+/* Pantallas bajas: el prado y el sol ceden un poco de alto a la nube */
+@media (max-height: 700px) {
+  :root { --alto-prado: clamp(160px, 28svh, 360px); }
+  .sol--dias { --tam: clamp(104px, min(36vw, 20svh), 190px); }
+  .nube-pregunta { margin-top: 20px; padding-top: 18px; padding-bottom: 14px; }
+  .pregunta { margin-bottom: 10px; }
+}
+
+/* Teléfonos pequeños (iPhone SE): se quita la fecha y todo se compacta */
+@media (max-height: 600px) {
+  :root { --alto-prado: clamp(140px, 25svh, 360px); --alto-colinas: 48px; }
+  main { padding-top: 14px; }
+  .fecha { display: none; }
+  .sol--dias { --tam: clamp(96px, min(34vw, 18svh), 190px); margin-top: 4px; }
+  .pregunta { font-size: clamp(20px, min(6vw, 3.8svh), var(--t-titulo)); }
+  .panel { min-height: 32px; }
+  .acciones { margin-top: 8px; }
 }
 
 /* ---------- Menos movimiento si así lo pide el sistema ---------- */
@@ -755,13 +1722,34 @@ h3 .de-pareja {
     transition-duration: 0.01ms !important;
   }
 
-  /* Las gotas se quedan quietas, repartidas por la pantalla */
-  .gota { animation: none; transform: rotate(45deg); }
-  .gota:nth-child(1) { top: 12%; }
-  .gota:nth-child(2) { top: 64%; }
-  .gota:nth-child(3) { top: 30%; }
-  .gota:nth-child(4) { top: 82%; }
-  .gota:nth-child(5) { top: 45%; }
-  .gota:nth-child(6) { top: 20%; }
-  .gota:nth-child(7) { top: 70%; }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
+  /* La lluvia: solo se nubla y se despeja, sin nubes que se muevan ni gotas */
+  .gota-lluvia,
+  .salpicadura {
+    display: none;
+  }
+
+  /* El sol no se mueve: solo pierde brillo */
+  html.nublando .sol--dias,
+  html.lloviendo .sol--dias {
+    animation: apagar-sol 1s ease forwards !important;
+  }
+
+  html.despejando .sol--dias {
+    animation: none !important;
+  }
+
+  /* Bienvenida: las frases solo se funden, sin desplazarse */
+  .intro__frase {
+    translate: -50% 0;
+  }
+
+  /* Las nubes se quedan quietas en su sitio */
+  .cielo .nube { animation: none; translate: var(--quieta) 0; }
+  .planta svg { animation: none; }
 }

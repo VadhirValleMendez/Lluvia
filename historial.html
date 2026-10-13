@@ -4,40 +4,91 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lluvia - Historial</title>
-  <meta name="theme-color" content="#21948A">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3S6 14.5 6 20.5a10 10 0 0 0 20 0C26 14.5 16 3 16 3z' fill='%2321948A'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#2A6FB5">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3S6 14.5 6 20.5a10 10 0 0 0 20 0C26 14.5 16 3 16 3z' fill='%234A9AD8'/%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Lluvia">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..600,0..100&family=Nunito:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Young+Serif&display=swap">
   <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Las nubes siguen su camino al cambiar de página, en vez de volver a empezar
+    document.documentElement.style.setProperty("--reloj", ((Date.now() / 1000) % 86400).toFixed(1) + "s");
+    // Si la página llega con una transición, el sol no vuelve a "amanecer"
+    addEventListener("pagereveal", (e) => {
+      if (e.viewTransition) document.documentElement.classList.add("llegando");
+    });
+    // Sin sesión guardada, directo al login antes de pintar nada.
+    // (Es comodidad: la comprobación de verdad la hace iniciar() y la seguridad, las reglas RLS.)
+    try {
+      if (!Object.keys(localStorage).some((clave) => clave.endsWith("-auth-token"))) location.replace("index.html");
+    } catch {}
+  </script>
 </head>
-<body class="pagina-historial">
-  <!-- Gotas decorativas del fondo -->
-  <div class="lluvia" aria-hidden="true">
-    <span class="gota"></span><span class="gota"></span><span class="gota"></span><span class="gota"></span>
-    <span class="gota"></span><span class="gota"></span><span class="gota"></span>
+<body>
+  <!-- Cielo del fondo: sol y nubes -->
+  <div class="cielo" aria-hidden="true">
+    <div class="sol sol--fondo"></div>
+    <!-- El arcoíris: "ya respondí hoy" (js/arcoiris.js) -->
+    <svg id="arcoiris" class="arcoiris" data-lugar="sobre-nube" viewBox="0 0 1000 520" hidden>
+      <path class="arcoiris__banda" style="--i: 0" pathLength="1" d="M30 520A470 470 0 0 1 970 520"/>
+      <path class="arcoiris__banda" style="--i: 1" pathLength="1" d="M44 520A456 456 0 0 1 956 520"/>
+      <path class="arcoiris__banda" style="--i: 2" pathLength="1" d="M58 520A442 442 0 0 1 942 520"/>
+      <path class="arcoiris__banda" style="--i: 3" pathLength="1" d="M72 520A428 428 0 0 1 928 520"/>
+      <path class="arcoiris__banda" style="--i: 4" pathLength="1" d="M86 520A414 414 0 0 1 914 520"/>
+      <path class="arcoiris__banda" style="--i: 5" pathLength="1" d="M100 520A400 400 0 0 1 900 520"/>
+    </svg>
+    <div class="nube nube--1"></div>
+    <div class="nube nube--2"></div>
+    <div class="nube nube--3"></div>
   </div>
 
-  <!-- Oculto hasta confirmar que hay sesión iniciada -->
-  <main id="contenido" hidden>
-    <header class="cabecera cabecera--historial">
-      <h1>Historial</h1>
-    </header>
+  <div id="contenido" class="pagina pagina--historial">
+    <main>
+      <header class="cabecera">
+        <nav class="nav" aria-label="Secciones">
+          <a href="home.html">Hoy</a>
+          <a href="jardin.html">Jardín</a>
+          <a href="historial.html" aria-current="page">Historial</a>
+        </nav>
+        <div class="cabecera__texto">
+          <h1>Historial</h1>
+        </div>
+      </header>
 
-    <nav class="nav" aria-label="Secciones">
-      <a href="home.html">Hoy</a>
-      <a href="historial.html" aria-current="page">Historial</a>
-    </nav>
+      <!-- Todas las preguntas; la lista se desplaza dentro de su zona -->
+      <section id="lista" class="hojas" tabindex="0" aria-label="Preguntas y respuestas">
+        <p class="aviso">Cargando…</p>
+      </section>
 
-    <section id="lista" class="linea-tiempo">Cargando...</section>
+    </main>
 
-    <button id="btn-salir" class="btn-texto">Cerrar sesión</button>
-  </main>
+    <footer class="prado">
+      <svg class="prado__montanas" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+        <path class="montana--lejos" d="M0 120V78C70 60 120 30 190 34s120 40 190 30 110-52 200-50 130 44 210 40 120-46 210-44 140 38 220 36 130-30 220-20V120Z"/>
+        <path class="montana--cerca" d="M0 120V96C90 80 150 54 240 60s140 34 230 28 120-38 220-34 150 34 240 32 140-30 230-24 120 20 280 26V120Z"/>
+      </svg>
+      <svg class="prado__colinas" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+        <path class="colina--atras" d="M0 60C240 0 480 10 720 50s480 -30 720 -10V120H0Z"/>
+        <path class="colina--frente" d="M0 100C300 50 560 70 820 95s440 -25 620 -15V120H0Z"/>
+      </svg>
+      <div class="prado__suelo">
+        <div class="prado__pie">
+          <button id="btn-salir" class="btn-salir">Cerrar sesión</button>
+        </div>
+      </div>
+    </footer>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
   <script src="js/supabaseClient.js"></script>
   <script src="js/lluvia.js"></script>
+  <script src="js/arcoiris.js"></script>
   <script src="js/historial.js"></script>
 </body>
 </html>

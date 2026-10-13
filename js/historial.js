@@ -1,6 +1,13 @@
 const contenido = document.getElementById("contenido");
 const lista = document.getElementById("lista");
 const btnSalir = document.getElementById("btn-salir");
+// Mensaje suelto en lugar de la lista (cargando, vacío, error)
+function ponerAviso(texto) {
+  const aviso = document.createElement("p");
+  aviso.className = "aviso";
+  aviso.textContent = texto;
+  lista.replaceChildren(aviso);
+}
 
 // Crea un bloque "Nombre: texto". Se usa textContent (no innerHTML) a propósito:
 // así, si una respuesta contiene símbolos como < o >, se muestran como texto
@@ -58,14 +65,14 @@ function dibujar(preguntas, respuestas, perfiles, miId) {
     const deLaPareja = delDia.find((r) => r.usuario_id !== miId);
 
     const articulo = document.createElement("article");
-    articulo.className = "tarjeta dia";
+    articulo.className = "dia";
 
     const etiqueta = document.createElement("p");
-    etiqueta.className = "etiqueta";
-    etiqueta.textContent = "#" + pregunta.numero + " · " + fechaDePregunta(pregunta.numero);
+    etiqueta.className = "numero-pregunta";
+    etiqueta.textContent = "Pregunta " + pregunta.numero + ", del " + fechaDePregunta(pregunta.numero);
     articulo.appendChild(etiqueta);
 
-    const titulo = document.createElement("h3");
+    const titulo = document.createElement("h2");
     titulo.textContent = pregunta.texto;
     articulo.appendChild(titulo);
 
@@ -115,7 +122,7 @@ async function iniciar() {
 
   const hoy = numeroDePreguntaHoy();
   if (hoy < 1) {
-    lista.textContent = "El diario empieza el " + fechaDePregunta(1) + ".";
+    ponerAviso("El diario empieza el " + fechaDePregunta(1) + ".");
     return;
   }
 
@@ -127,14 +134,20 @@ async function iniciar() {
     ]);
 
     if (preguntas.length === 0) {
-      lista.textContent = "Todavía no hay preguntas.";
+      ponerAviso("Todavía no hay preguntas.");
       return;
     }
 
     dibujar(preguntas, respuestas, perfiles, data.session.user.id);
+
+    // El arcoíris: ya respondí la pregunta de hoy
+    const miId = data.session.user.id;
+    if (respuestas.some((r) => r.usuario_id === miId && r.pregunta_numero === hoy)) {
+      mostrarArcoiris(false);
+    }
   } catch (error) {
     console.error(error.message);
-    lista.textContent = "No se pudo cargar el historial. Intenta de nuevo.";
+    ponerAviso("No se pudo cargar el historial. Recarga la página para intentarlo de nuevo.");
   }
 }
 

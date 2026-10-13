@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Icono de Lluvia: cielo, la nube del logo y tres gotas. Sin esquinas redondeadas:
+       el sistema las recorta (sirve también como icono "maskable"). -->
+  <defs>
+    <linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A6FB5"/>
+      <stop offset="1" stop-color="#4A9AD8"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#cielo)"/>
+  <g fill="#FFFFFF">
+    <circle cx="196" cy="228" r="62"/>
+    <circle cx="272" cy="194" r="76"/>
+    <circle cx="348" cy="234" r="56"/>
+    <rect x="134" y="222" width="270" height="76" rx="38"/>
+  </g>
+  <g fill="#DDEEFA">
+    <path d="M203 330s-21 24-21 36a21 21 0 0 0 42 0c0-12-21-36-21-36z"/>
+    <path d="M269 344s-21 24-21 36a21 21 0 0 0 42 0c0-12-21-36-21-36z"/>
+    <path d="M335 330s-21 24-21 36a21 21 0 0 0 42 0c0-12-21-36-21-36z"/>
+  </g>
+</svg>
