@@ -1,3 +1,8 @@
-# Los SQL no se suben: el repositorio es público y preguntas.sql
-# revelaría las preguntas de días futuros. Ya están en Supabase.
+# La carpeta supabase/ NO se sube nunca (el repositorio es público). Guarda:
+#   - preguntas.sql y preguntas_nuevas.sql: revelarían las preguntas de días futuros
+#   - .vapid-privada y .avisos-secreto: secretos de las notificaciones
+#   - avisos.sql y avisos_con_cabecera.sql: llevan el secreto dentro
+#   - COMANDOS_SQL.txt, AVISOS.md y functions/: guía y código de Supabase
+# Todo eso ya está aplicado en Supabase. Haz una copia de esta carpeta fuera del
+# repositorio: si se pierde, no se puede recuperar desde GitHub.
 supabase/
