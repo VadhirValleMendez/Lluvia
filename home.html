@@ -63,34 +63,37 @@
       </header>
 
       <section class="nube-pregunta" aria-labelledby="texto-pregunta">
-        <p id="titulo-pregunta" class="numero-pregunta"></p>
-        <h2 id="texto-pregunta" class="pregunta"></h2>
+        <!-- Si no cabe todo (pantalla baja, pregunta larga), esto se desplaza dentro de la nube -->
+        <div class="nube-pregunta__interior">
+          <p id="titulo-pregunta" class="numero-pregunta"></p>
+          <h2 id="texto-pregunta" class="pregunta"></h2>
 
-        <!-- Mi respuesta y la de la pareja comparten el espacio: se cambia con las pestañas -->
-        <div id="pestanas" class="pestanas" role="tablist" aria-label="Respuestas" hidden>
-          <button type="button" role="tab" id="pestana-mia" class="pestana pestana--mia"
-                  aria-controls="form-respuesta" aria-selected="true">Tu respuesta</button>
-          <button type="button" role="tab" id="pestana-pareja" class="pestana pestana--pareja"
-                  aria-controls="seccion-pareja" aria-selected="false" tabindex="-1"></button>
-        </div>
-
-        <form id="form-respuesta" class="panel" role="tabpanel" aria-labelledby="pestana-mia" hidden>
-          <!-- Cómo me sentí: se elige antes de guardar (las caritas las pone js/animos.js) -->
-          <div id="animos" class="animos" role="radiogroup" aria-labelledby="animos-pregunta">
-            <p id="animos-pregunta" class="animos__pregunta">¿Cómo te sentiste hoy?</p>
-            <div id="animos-caras" class="animos__caras"></div>
+          <!-- Mi respuesta y la de la pareja comparten el espacio: se cambia con las pestañas -->
+          <div id="pestanas" class="pestanas" role="tablist" aria-label="Respuestas" hidden>
+            <button type="button" role="tab" id="pestana-mia" class="pestana pestana--mia"
+                    aria-controls="form-respuesta" aria-selected="true">Tu respuesta</button>
+            <button type="button" role="tab" id="pestana-pareja" class="pestana pestana--pareja"
+                    aria-controls="seccion-pareja" aria-selected="false" tabindex="-1"></button>
           </div>
-          <textarea id="respuesta" class="renglones" aria-labelledby="pestana-mia" required></textarea>
-        </form>
 
-        <div id="seccion-pareja" class="panel" role="tabpanel" aria-labelledby="pestana-pareja" hidden>
-          <p id="animo-pareja" class="animo-pareja" hidden></p>
-          <p id="respuesta-pareja" class="texto-respuesta renglones renglones--pareja"></p>
-        </div>
+          <form id="form-respuesta" class="panel" role="tabpanel" aria-labelledby="pestana-mia" hidden>
+            <!-- Cómo me sentí: se elige antes de guardar (las caritas las pone js/animos.js) -->
+            <div id="animos" class="animos" role="radiogroup" aria-labelledby="animos-pregunta">
+              <p id="animos-pregunta" class="animos__pregunta">¿Cómo te sentiste hoy?</p>
+              <div id="animos-caras" class="animos__caras"></div>
+            </div>
+            <textarea id="respuesta" class="renglones" aria-labelledby="pestana-mia" required></textarea>
+          </form>
 
-        <div class="acciones">
-          <p id="estado" class="estado" role="status"></p>
-          <button type="submit" form="form-respuesta" id="btn-guardar" class="btn" hidden>Guardar respuesta</button>
+          <div id="seccion-pareja" class="panel" role="tabpanel" aria-labelledby="pestana-pareja" hidden>
+            <p id="animo-pareja" class="animo-pareja" hidden></p>
+            <p id="respuesta-pareja" class="texto-respuesta renglones renglones--pareja"></p>
+          </div>
+
+          <div class="acciones">
+            <p id="estado" class="estado" role="status"></p>
+            <button type="submit" form="form-respuesta" id="btn-guardar" class="btn" hidden>Guardar respuesta</button>
+          </div>
         </div>
       </section>
     </main>

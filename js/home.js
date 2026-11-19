@@ -46,6 +46,23 @@ function mostrarPestana(cual, enfocar = false) {
   if (enfocar) (esMia ? pestanaMia : pestanaPareja).focus();
 }
 
+// Si lo de la nube no cabe (pantalla baja, pregunta larga), se desplaza dentro
+// de ella; mientras quede más abajo, su borde inferior se difumina.
+const interiorNube = document.querySelector(".nube-pregunta__interior");
+
+function marcarSiHayMas() {
+  const resto = interiorNube.scrollHeight - interiorNube.clientHeight - interiorNube.scrollTop;
+  interiorNube.classList.toggle("hay-mas", resto > 2);
+}
+
+interiorNube.addEventListener("scroll", marcarSiHayMas, { passive: true });
+if ("ResizeObserver" in window) {
+  // Cambia el tamaño de la nube (girar el teléfono) o de lo de dentro (otra pestaña, la pregunta)
+  const observador = new ResizeObserver(marcarSiHayMas);
+  observador.observe(interiorNube);
+  for (const hijo of interiorNube.children) observador.observe(hijo);
+}
+
 // Sin pregunta que responder: solo se ve el texto de la nube
 function ocultarRespuestas() {
   pestanas.hidden = true;
@@ -96,10 +113,15 @@ function claveBorradorAnimo() {
 // "¿Cómo te sentiste hoy? Calma": el nombre de la elegida, en azul (es mío)
 function pintarPreguntaAnimo() {
   const elegido = animoElegido();
-  const pregunta = cerrada
-    ? "Cómo te sentiste:"
-    : numero === numeroDePreguntaHoy() ? "¿Cómo te sentiste hoy?" : "¿Cómo te sentiste ese día?";
-  pintarTexto(animosPregunta, [pregunta]);
+  if (cerrada) {
+    pintarTexto(animosPregunta, ["Cómo te sentiste:"]);
+  } else {
+    // "hoy" / "ese día" se esconde en el móvil (CSS) para que quepa junto a las gotas
+    const cuando = document.createElement("span");
+    cuando.className = "animos__cuando";
+    cuando.textContent = numero === numeroDePreguntaHoy() ? " hoy" : " ese día";
+    animosPregunta.replaceChildren("¿Cómo te sentiste", cuando, "?");
+  }
   if (elegido) {
     // En pantallas estrechas se esconde (CSS), para que las gotas quepan en la misma fila
     const nombre = document.createElement("span");

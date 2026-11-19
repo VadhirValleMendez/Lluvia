@@ -464,6 +464,21 @@ main {
   }
 }
 
+/* Lo de dentro de la nube de Hoy. Normalmente cabe y solo se desplazan los
+   renglones; si no cabe (pantalla baja, pregunta larga), se desplaza todo
+   dentro de la nube en vez de encimarse. El margen negativo deja sitio al
+   aro de foco y a la gota elegida, que crece un poco. */
+.nube-pregunta__interior {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: -6px;
+  padding: 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 .numero-pregunta {
   flex: none;
   margin-bottom: 6px;
@@ -582,7 +597,20 @@ main {
   .animos__nombre { display: inline; }
 }
 
-/* Con las gotas encima, la caja de texto conserva al menos dos renglones */
+/* Mi respuesta no se encoge por debajo de las gotas y sus renglones mínimos:
+   si falta sitio, se desplaza el interior de la nube (nada queda encimado) */
+form.panel {
+  flex: 1 0 auto;
+}
+
+/* Si hay más abajo (la nube se desplaza), el borde de abajo se difumina */
+.nube-pregunta__interior.hay-mas {
+  -webkit-mask-image: linear-gradient(#000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(#000 calc(100% - 28px), transparent);
+}
+
+/* Con las gotas encima, la caja de texto conserva al menos dos renglones
+   (tres en el móvil, más abajo); si hay sitio, crece */
 .animos + textarea.renglones {
   min-height: 64px;
 }
@@ -1891,6 +1919,21 @@ html.despejando .sol--dias {
   .pestanas { margin-bottom: 4px; }
 }
 
+/* Móviles: en Hoy el prado es más bajo, para dejarle sitio a la respuesta */
+@media (max-width: 600px) {
+  .pagina--hoy { --alto-prado: clamp(100px, 15svh, 200px); }
+  /* "¿Cómo te sentiste?" cabe en la misma fila que las gotas */
+  .animos__cuando { display: none; }
+  .animos + textarea.renglones { min-height: 96px; } /* tres renglones para escribir */
+  .animos { column-gap: 10px; }
+  .acciones { margin-top: 8px; }
+  .nube-pregunta { padding-bottom: 14px; }
+  /* el sol, el saludo y la pregunta, un poco más pequeños */
+  .sol--dias { --tam: clamp(96px, min(28vw, 16svh), 190px); }
+  .cabecera h1 { font-size: clamp(24px, 7vw, var(--t-titulo)); }
+  .pregunta { font-size: clamp(19px, min(5.4vw, 3.4svh), var(--t-titulo)); margin-bottom: 10px; }
+}
+
 /* Teléfonos pequeños (iPhone SE): se quita la fecha y todo se compacta */
 @media (max-height: 600px) {
   :root { --alto-prado: clamp(140px, 25svh, 360px); --alto-colinas: 48px; }
@@ -1899,7 +1942,7 @@ html.despejando .sol--dias {
   .sol--dias { --tam: clamp(96px, min(34vw, 18svh), 190px); margin-top: 4px; }
   .pregunta { font-size: clamp(20px, min(6vw, 3.8svh), var(--t-titulo)); }
   .panel { min-height: 32px; }
-  .animos + textarea.renglones { min-height: 32px; } /* un renglón: no hay sitio para más */
+  .animos + textarea.renglones { min-height: 64px; } /* dos renglones: no hay sitio para más */
   .pagina--hoy { --alto-prado: 118px; } /* para que quepan las gotas del ánimo */
   .acciones { margin-top: 8px; }
 }
