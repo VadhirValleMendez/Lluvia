@@ -20,7 +20,8 @@ function colocarArcoiris() {
     if (!prado) return;
     arriba = prado.getBoundingClientRect().top + 24 - altoArco;
   } else {
-    const nube = document.querySelector(".nube-pregunta, .hojas");
+    // En Historial, la primera nube es el buscador (si se ve) y si no, la lista
+    const nube = document.querySelector(".nube-pregunta, .buscador:not([hidden]), .hojas");
     const texto = document.querySelector(".cabecera__texto");
     if (!nube) return;
     const arribaNube = nube.getBoundingClientRect().top;

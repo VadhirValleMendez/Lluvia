@@ -57,8 +57,11 @@
         </nav>
       </header>
 
-      <!-- Solo el nombre, centrado en medio del cielo -->
-      <h1 class="titulo-cielo">Jardín</h1>
+      <!-- El nombre, centrado en medio del cielo, y debajo cuántas plantas hay -->
+      <div class="titulo-cielo">
+        <h1>Jardín</h1>
+        <p id="cuenta-jardin" class="titulo-cielo__cuenta" hidden></p>
+      </div>
     </main>
 
     <!-- Cada flor es un día; al tocarla se abre esa pregunta -->
@@ -81,7 +84,7 @@
     </footer>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.1"></script>
   <script src="js/config.js"></script>
   <script src="js/supabaseClient.js"></script>
   <script src="js/lluvia.js"></script>

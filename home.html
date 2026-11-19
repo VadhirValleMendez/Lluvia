@@ -75,10 +75,16 @@
         </div>
 
         <form id="form-respuesta" class="panel" role="tabpanel" aria-labelledby="pestana-mia" hidden>
+          <!-- Cómo me sentí: se elige antes de guardar (las caritas las pone js/animos.js) -->
+          <div id="animos" class="animos" role="radiogroup" aria-labelledby="animos-pregunta">
+            <p id="animos-pregunta" class="animos__pregunta">¿Cómo te sentiste hoy?</p>
+            <div id="animos-caras" class="animos__caras"></div>
+          </div>
           <textarea id="respuesta" class="renglones" aria-labelledby="pestana-mia" required></textarea>
         </form>
 
         <div id="seccion-pareja" class="panel" role="tabpanel" aria-labelledby="pestana-pareja" hidden>
+          <p id="animo-pareja" class="animo-pareja" hidden></p>
           <p id="respuesta-pareja" class="texto-respuesta renglones renglones--pareja"></p>
         </div>
 
@@ -118,7 +124,7 @@
   </div>
   <p id="aviso-lluvia" class="solo-lectores" role="status"></p>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.1"></script>
   <script src="js/config.js"></script>
   <script src="js/supabaseClient.js"></script>
   <script src="js/lluvia.js"></script>
@@ -126,6 +132,7 @@
   <script src="js/arcoiris.js"></script>
   <script src="js/tormenta.js"></script>
   <script src="js/avisos.js"></script>
+  <script src="js/animos.js"></script>
   <script src="js/home.js"></script>
 </body>
 </html>

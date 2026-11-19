@@ -124,10 +124,15 @@ const TIPOS_DE_FLOR = [
 // El brote: un capullo cerrado (forma de gota) en un cáliz verde. Asoma el
 // color de la flor que será, y está a la misma altura, para que al florecer
 // la flor salga del mismo sitio.
+// El capullo es un poco más grande que en el dibujo base (TAMANO_CAPULLO),
+// creciendo desde su base para que siga apoyado en el cáliz.
+const TAMANO_CAPULLO = 1.5;
+
 function dibujarBrote(g, x, y) {
   forma(g, "path", {
     class: "petalo",
     d: `M${x} ${y - 12} C${x + 6} ${y - 4} ${x + 5} ${y + 4} ${x} ${y + 6} C${x - 5} ${y + 4} ${x - 6} ${y - 4} ${x} ${y - 12} Z`,
+    transform: `translate(${x} ${y + 6}) scale(${TAMANO_CAPULLO}) translate(${-x} ${-(y + 6)})`,
   });
   forma(g, "path", { class: "caliz", d: `M${x} ${y + 7} q-8 -1 -8 -10 q5 3 8 10 Z` });
   forma(g, "path", { class: "caliz", d: `M${x} ${y + 7} q8 -1 8 -10 q-5 3 -8 10 Z` });
@@ -138,9 +143,47 @@ function crearFlor(numero) {
   return crearPlanta(numero, false);
 }
 
-// El brote del día "numero": mi respuesta, esperando la de la pareja
+// El brote del día "numero": mi respuesta, esperando la de la pareja.
+// Es el mismo dibujo que la flor (tallo, hoja y capullo), pero el CSS lo
+// muestra a la mitad de tamaño (.planta--brote).
 function crearBrote(numero) {
   return crearPlanta(numero, true);
+}
+
+// El brotecito del día "numero": nadie respondió a tiempo (o aún nadie hoy).
+// Solo dos hojitas verdes a ras de suelo. El dibujo es solo la franja de
+// abajo (viewBox 0 80 40 40), por eso su caja es más baja (.planta--brotecito).
+function crearBrotecito(numero) {
+  const aleatorio = azar(numero * 2654435761 + 1);
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("viewBox", "0 80 40 40");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("focusable", "false");
+  svg.setAttribute("class", "flor flor--brotecito");
+  svg.style.setProperty("--giro", entre(-8, 8, aleatorio).toFixed(1) + "deg");
+  svg.style.setProperty("--mecer", entre(4.5, 7, aleatorio).toFixed(1) + "s");
+  svg.style.setProperty("--retraso", (-entre(0, 6, aleatorio)).toFixed(1) + "s");
+  svg.dataset.cabeza = "0.45";
+
+  // Un tallito y dos hojas iguales a las de las flores, abiertas hacia arriba
+  const alto = entre(5, 8, aleatorio);
+  const base = 120 - alto;
+  forma(svg, "path", { class: "tallo", d: `M20 120 L20 ${base}` });
+  dibujarHoja(svg, base, { derecha: false, transform: `rotate(-25 20 ${base})` });
+  dibujarHoja(svg, base, { derecha: true, transform: `rotate(-25 20 ${base})` });
+  return svg;
+}
+
+// La hoja: la misma en flores, brotes y brotecitos. Sale del tallo (x = 20)
+// a la altura "y", hacia la derecha o, en espejo, hacia la izquierda.
+// "transform" se aplica antes del espejo (por ejemplo, para girarla).
+function dibujarHoja(padre, y, { derecha = true, transform = "" } = {}) {
+  const espejo = derecha ? "" : "translate(40 0) scale(-1 1) ";
+  return forma(padre, "path", {
+    class: "hoja",
+    d: `M20 ${y} q9 -9 15 -3 q-7 8 -15 3 Z`,
+    transform: (espejo + transform).trim(),
+  });
 }
 
 function crearPlanta(numero, esBrote) {
@@ -165,11 +208,13 @@ function crearPlanta(numero, esBrote) {
   const cabezaY = 120 - alto;
   const hojaY = 120 - alto * 0.38;
   // Dónde empieza la cabeza (0 = arriba del dibujo), para colocar la etiqueta encima
-  svg.dataset.cabeza = ((cabezaY - 18) / 120).toFixed(3);
-  forma(svg, "path", {
-    class: "hoja",
-    d: `M20 ${hojaY} q9 -9 15 -3 q-7 8 -15 3 Z`,
-    transform: hojaALaDerecha ? "" : "translate(40 0) scale(-1 1)",
+  svg.dataset.cabeza = ((cabezaY - (esBrote ? 6 + 18 * TAMANO_CAPULLO : 18)) / 120).toFixed(3);
+
+  // El brote se muestra a la mitad (.planta--brote): su hoja se dibuja al doble
+  // para que se vea del mismo tamaño que la de una flor
+  dibujarHoja(svg, hojaY, {
+    derecha: hojaALaDerecha,
+    transform: esBrote ? `translate(20 ${hojaY}) scale(2) translate(-20 ${-hojaY})` : "",
   });
 
   // El tallo va encima de la hoja
@@ -193,6 +238,8 @@ function crearPlanta(numero, esBrote) {
 // cambia al editar): responder una pregunta anterior no hace nacer nada.
 // Por las reglas RLS solo llega la respuesta de la pareja si yo ya respondí;
 // si respondió solo la pareja, no lo puedo saber: no hay brote hasta que yo responda.
+//   brotecitos: los demás días, de la pregunta 1 a la de hoy (nadie respondió a
+//               tiempo, o solo la pareja): dos hojitas a ras de suelo.
 //   respondiHoy: si ya respondí la pregunta de hoy (para el arcoíris)
 async function estadoDelJardin(miId) {
   const respuestas = await traerTodo("respuestas", "usuario_id, pregunta_numero, creada_en", "id");
@@ -211,23 +258,35 @@ async function estadoDelJardin(miId) {
     if (aTiempo[n].size >= 2) flores.push(n);
     else if (aTiempo[n].has(miId)) brotes.push(n);
   }
-  return { flores, brotes, respondiHoy };
+  const conPlanta = new Set([...flores, ...brotes]);
+  const brotecitos = [];
+  for (let n = 1; n <= hoy; n++) if (!conPlanta.has(n)) brotecitos.push(n);
+  return { flores, brotes, brotecitos, respondiHoy };
 }
 
-// Texto para contar el jardín: "29 flores y 1 brote"
-function contarJardin(flores, brotes) {
+// Texto para contar el jardín: "29 flores, 1 brote y 3 brotecitos"
+function contarJardin(flores, brotes, brotecitos = 0) {
   const partes = [flores === 1 ? "1 flor" : flores + " flores"];
   if (brotes) partes.push(brotes === 1 ? "1 brote" : brotes + " brotes");
-  return partes.join(" y ");
+  if (brotecitos) partes.push(brotecitos === 1 ? "1 brotecito" : brotecitos + " brotecitos");
+  return partes.length > 1 ? partes.slice(0, -1).join(", ") + " y " + partes.at(-1) : partes[0];
 }
 
 // Para probar cómo se ve un jardín grande: añade ?flores=100 a la dirección
-// (home.html?flores=100 o jardin.html?flores=100). Son flores de mentira:
-// solo se pintan en esta pantalla; no se guarda nada ni se toca la base de datos.
+// (home.html?flores=100 o jardin.html?flores=100). Son días de mentira (casi
+// todos flores, algunos brotes y brotecitos): solo se pintan en esta pantalla;
+// no se guarda nada ni se toca la base de datos.
 function floresDePrueba() {
   const cantidad = Math.floor(Number(new URLSearchParams(window.location.search).get("flores")));
   if (!(cantidad > 0)) return null;
-  return Array.from({ length: Math.min(cantidad, 1000) }, (_, i) => i + 1);
+  const prueba = { flores: [], brotes: [], brotecitos: [] };
+  for (let n = 1; n <= Math.min(cantidad, 1000); n++) {
+    const suerte = azar(n * 31 + 5)();
+    if (suerte < 0.15) prueba.brotecitos.push(n);
+    else if (suerte < 0.3) prueba.brotes.push(n);
+    else prueba.flores.push(n);
+  }
+  return prueba;
 }
 
 // Las flores que esta persona todavía no había visto (para que broten con animación).
@@ -260,10 +319,11 @@ const jardinesPlantados = new WeakMap();
 //   fijo:    true para un prado tranquilo, sin desplazarse: solo las últimas
 //            flores que caben en una fila, bien separadas (lo usa Hoy)
 //   brotes:  Set de números que se dibujan como brote (mi respuesta esperando)
+//   brotecitos: Set de números sin respuestas a tiempo (dos hojitas)
 //   nombrePareja: para la etiqueta de los brotes
-function plantarJardin(contenedor, numeros, { nuevas = new Set(), enlaces = false, escala = 1, fijo = false, brotes = new Set(), nombrePareja = "tu pareja" } = {}) {
+function plantarJardin(contenedor, numeros, { nuevas = new Set(), enlaces = false, escala = 1, fijo = false, brotes = new Set(), brotecitos = new Set(), nombrePareja = "tu pareja" } = {}) {
   const primeraVez = !jardinesPlantados.has(contenedor);
-  const opciones = { enlaces, escala, fijo, brotes, nombrePareja };
+  const opciones = { enlaces, escala, fijo, brotes, brotecitos, nombrePareja };
   jardinesPlantados.set(contenedor, { numeros, opciones });
   dibujarJardin(contenedor, numeros, opciones, nuevas);
   contenedor.scrollLeft = contenedor.scrollWidth; // las más recientes a la vista
@@ -298,7 +358,7 @@ function plantarJardin(contenedor, numeros, { nuevas = new Set(), enlaces = fals
 
 const ANCHO_COLUMNA_FIJO = 84; // en el prado fijo de Hoy, las flores van más separadas
 
-function dibujarJardin(contenedor, todas, { enlaces, escala, fijo, brotes, nombrePareja }, nuevas) {
+function dibujarJardin(contenedor, todas, { enlaces, escala, fijo, brotes, brotecitos, nombrePareja }, nuevas) {
   const lienzo = document.createElement("div");
   lienzo.className = "jardin__lienzo";
   contenedor.replaceChildren(lienzo);
@@ -358,6 +418,10 @@ function dibujarJardin(contenedor, todas, { enlaces, escala, fijo, brotes, nombr
         const espera = "esperando la respuesta de " + nombrePareja;
         planta.dataset.etiqueta = "Pregunta " + dia + ": " + espera;
         planta.setAttribute("aria-label", "Brote de la pregunta " + dia + ", " + espera);
+      } else if (brotecitos.has(numero)) {
+        const nada = numero === numeroDePreguntaHoy() ? "esperando sus respuestas" : "ese día no brotó flor";
+        planta.dataset.etiqueta = "Pregunta " + dia + ": " + nada;
+        planta.setAttribute("aria-label", "Brotecito de la pregunta " + dia + ", " + nada);
       } else {
         planta.dataset.etiqueta = "Pregunta " + dia;
         planta.setAttribute("aria-label", "Flor de la pregunta " + dia);
@@ -377,7 +441,15 @@ function dibujarJardin(contenedor, todas, { enlaces, escala, fijo, brotes, nombr
       planta.style.setProperty("--brote", Math.min((n - 1 - i) * 0.04, 2.5) + "s");
     }
 
-    planta.appendChild(brotes.has(numero) ? crearBrote(numero) : crearFlor(numero));
+    if (brotes.has(numero)) {
+      planta.classList.add("planta--brote");
+      planta.appendChild(crearBrote(numero));
+    } else if (brotecitos.has(numero)) {
+      planta.classList.add("planta--brotecito");
+      planta.appendChild(crearBrotecito(numero));
+    } else {
+      planta.appendChild(crearFlor(numero));
+    }
     lienzo.appendChild(planta);
   });
 }

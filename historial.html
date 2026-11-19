@@ -60,6 +60,16 @@
         </div>
       </header>
 
+      <!-- Buscar por palabras, por la pregunta o por su número (js/historial.js) -->
+      <form id="buscador" class="buscador" role="search" hidden>
+        <label for="buscar" class="solo-lectores">Buscar en el historial</label>
+        <svg class="buscador__gota" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M16 3S6 14.5 6 20.5a10 10 0 0 0 20 0C26 14.5 16 3 16 3z"/>
+        </svg>
+        <input id="buscar" type="search" placeholder="Buscar una palabra o una pregunta" autocomplete="off" enterkeyhint="search">
+        <p id="resultado-busqueda" class="solo-lectores" role="status"></p>
+      </form>
+
       <!-- Todas las preguntas; la lista se desplaza dentro de su zona -->
       <section id="lista" class="hojas" tabindex="0" aria-label="Preguntas y respuestas">
         <p class="aviso">Cargando…</p>
@@ -84,11 +94,12 @@
     </footer>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.1"></script>
   <script src="js/config.js"></script>
   <script src="js/supabaseClient.js"></script>
   <script src="js/lluvia.js"></script>
   <script src="js/arcoiris.js"></script>
+  <script src="js/animos.js"></script>
   <script src="js/historial.js"></script>
 </body>
 </html>

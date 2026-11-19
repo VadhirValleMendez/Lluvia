@@ -1,4 +1,3 @@
-const contenido = document.getElementById("contenido");
 const saludo = document.getElementById("saludo");
 const tituloPregunta = document.getElementById("titulo-pregunta");
 const textoPregunta = document.getElementById("texto-pregunta");
@@ -8,7 +7,6 @@ const btnGuardar = document.getElementById("btn-guardar");
 const estado = document.getElementById("estado");
 const seccionPareja = document.getElementById("seccion-pareja");
 const respuestaPareja = document.getElementById("respuesta-pareja");
-const btnSalir = document.getElementById("btn-salir");
 const contadorDias = document.getElementById("contador-dias");
 const jardin = document.getElementById("jardin");
 const jardinVacio = document.getElementById("jardin-vacio");
@@ -16,6 +14,10 @@ const pestanas = document.getElementById("pestanas");
 const pestanaMia = document.getElementById("pestana-mia");
 const pestanaPareja = document.getElementById("pestana-pareja");
 const fechaHoy = document.getElementById("fecha-hoy");
+const animos = document.getElementById("animos");
+const animosPregunta = document.getElementById("animos-pregunta");
+const animosCaras = document.getElementById("animos-caras");
+const animoPareja = document.getElementById("animo-pareja");
 
 let usuario = null;       // la persona con sesión iniciada
 let numero = 0;           // número de la pregunta que se está mostrando
@@ -62,6 +64,68 @@ pestanas.addEventListener("keydown", (e) => {
   }
 });
 
+// ---------- El ánimo del día ----------
+// Las cinco gotas (js/animos.js) son radios nativos: se eligen con el ratón,
+// el dedo o las flechas del teclado sin código extra.
+for (const { clave, nombre } of ANIMOS) {
+  const opcion = document.createElement("label");
+  opcion.className = "animo-opcion";
+  opcion.title = nombre;
+  const radio = document.createElement("input");
+  radio.type = "radio";
+  radio.name = "animo";
+  radio.value = clave;
+  radio.className = "solo-lectores";
+  const texto = document.createElement("span");
+  texto.className = "solo-lectores";
+  texto.textContent = nombre;
+  opcion.append(radio, crearCaraAnimo(clave), texto);
+  animosCaras.appendChild(opcion);
+}
+const radiosAnimo = [...animosCaras.querySelectorAll("input")];
+
+function animoElegido() {
+  const elegido = radiosAnimo.find((r) => r.checked);
+  return elegido ? elegido.value : null;
+}
+
+function claveBorradorAnimo() {
+  return claveBorrador(usuario.id, numero) + "-animo";
+}
+
+// "¿Cómo te sentiste hoy? Calma": el nombre de la elegida, en azul (es mío)
+function pintarPreguntaAnimo() {
+  const elegido = animoElegido();
+  const pregunta = cerrada
+    ? "Cómo te sentiste:"
+    : numero === numeroDePreguntaHoy() ? "¿Cómo te sentiste hoy?" : "¿Cómo te sentiste ese día?";
+  pintarTexto(animosPregunta, [pregunta]);
+  if (elegido) {
+    // En pantallas estrechas se esconde (CSS), para que las gotas quepan en la misma fila
+    const nombre = document.createElement("span");
+    nombre.className = "mio animos__nombre";
+    nombre.textContent = " " + nombreAnimo(elegido);
+    animosPregunta.appendChild(nombre);
+  }
+}
+
+// Marca el ánimo "clave". Con la respuesta cerrada solo se ve el elegido
+// (y nada si la respuesta es de antes de que existieran los ánimos).
+function ponerAnimo(clave) {
+  for (const radio of radiosAnimo) {
+    radio.checked = radio.value === clave;
+    radio.disabled = cerrada;
+    radio.closest("label").hidden = cerrada && radio.value !== clave;
+  }
+  animos.hidden = cerrada && !clave;
+  pintarPreguntaAnimo();
+}
+
+animosCaras.addEventListener("change", () => {
+  pintarPreguntaAnimo();
+  if (usuario && numero && !cerrada) guardarLocal(claveBorradorAnimo(), animoElegido());
+});
+
 // Onda en el botón al guardar (como una gota que cae en un charco)
 function onda(boton) {
   boton.classList.remove("onda");
@@ -69,20 +133,13 @@ function onda(boton) {
   boton.classList.add("onda");
 }
 
-// Protección de la página: si no hay sesión, de regreso al login.
-// (Es solo comodidad: la seguridad real son las reglas RLS de la base de datos.)
 async function iniciar() {
-  const { data } = await db.auth.getSession();
+  const sesion = await exigirSesion();
+  if (!sesion) return;
 
-  if (!data.session) {
-    window.location.href = "index.html";
-    return;
-  }
-
-  usuario = data.session.user;
+  usuario = sesion.user;
   pintarTexto(saludo, ["Hola, ", mio(NOMBRES[usuario.email] || usuario.email)]);
   fechaHoy.textContent = fechaLegible(hoyEnMexico());
-  contenido.hidden = false;
 
   // Días juntos: en pantalla solo el número; el lector de pantalla lee la frase completa
   const dias = diasJuntos();
@@ -111,26 +168,29 @@ async function iniciar() {
 // prado. Si falla, simplemente no se muestra.
 async function cargarJardin() {
   const prueba = floresDePrueba();
-  let flores = prueba;
-  let brotes = [];
-  if (!prueba) {
+  let flores, brotes, brotecitos;
+  if (prueba) {
+    ({ flores, brotes, brotecitos } = prueba);
+  } else {
     try {
-      ({ flores, brotes } = await estadoDelJardin(usuario.id));
+      ({ flores, brotes, brotecitos } = await estadoDelJardin(usuario.id));
     } catch (error) {
       console.error(error.message);
       return;
     }
   }
 
-  const numeros = [...flores, ...brotes].sort((a, b) => a - b);
-  jardinVacio.hidden = numeros.length > 0;
-  jardin.setAttribute("aria-label", contarJardin(flores.length, brotes.length) + " en el jardín");
+  const numeros = [...flores, ...brotes, ...brotecitos].sort((a, b) => a - b);
+  // El mensaje se queda mientras no haya ni flores ni brotes (los brotecitos crecen debajo)
+  jardinVacio.hidden = flores.length + brotes.length > 0;
+  jardin.setAttribute("aria-label", contarJardin(flores.length, brotes.length, brotecitos.length) + " en el jardín");
   // Las últimas flores que caben en una fila (el aria-label cuenta todas)
   plantarJardin(jardin, numeros, {
     // Hoy: un prado tranquilo, sin desplazarse; las demás flores están en Jardín
     escala: 0.95,
     fijo: true,
     brotes: new Set(brotes),
+    brotecitos: new Set(brotecitos),
     // En modo de prueba brotan todas y no se recuerda nada
     nuevas: prueba ? new Set(flores) : floresNuevas(usuario.id, flores),
   });
@@ -184,7 +244,7 @@ async function cargarPregunta() {
   // 2) Las respuestas de esta pregunta y los nombres.
   // Las reglas RLS hacen que solo lleguen la mía y, si ya respondí, la de la pareja.
   const [resp, perfiles] = await Promise.all([
-    db.from("respuestas").select("id, usuario_id, texto").eq("pregunta_numero", numero),
+    db.from("respuestas").select("id, usuario_id, texto, animo").eq("pregunta_numero", numero),
     db.from("perfiles").select("id, nombre"),
   ]);
 
@@ -211,20 +271,35 @@ async function cargarPregunta() {
   formRespuesta.classList.toggle("respuesta-cerrada", cerrada);
   btnGuardar.textContent = miRespuesta ? "Actualizar respuesta" : "Guardar respuesta";
 
+  let animo = miRespuesta ? miRespuesta.animo : null;
   if (cerrada) {
     borrarLocal(claveBorrador(usuario.id, numero));
+    borrarLocal(claveBorradorAnimo());
     ponerEstado("Respondieron los dos: las respuestas quedan cerradas.", "cerrado");
   } else {
-    // Si quedó algo escrito sin guardar, lo recuperamos
+    // Si quedó algo escrito (o un ánimo elegido) sin guardar, lo recuperamos
     const borrador = leerLocal(claveBorrador(usuario.id, numero));
     if (borrador) campoRespuesta.value = borrador;
+    const animoBorrador = leerLocal(claveBorradorAnimo());
+    if (nombreAnimo(animoBorrador)) animo = animoBorrador;
   }
+  ponerAnimo(animo);
 
   // La respuesta de la pareja
   pintarTexto(pestanaPareja, ["La de ", dePareja(nombrePareja)]);
   pestanaPareja.classList.toggle("esperando", !respuestaDeLaPareja);
 
   respuestaPareja.classList.toggle("en-espera", !respuestaDeLaPareja);
+
+  // Cómo se sintió la pareja (solo llega si yo ya respondí; lo decide la base de datos)
+  const animoDeLaPareja = respuestaDeLaPareja ? respuestaDeLaPareja.animo : null;
+  animoPareja.hidden = !nombreAnimo(animoDeLaPareja);
+  if (!animoPareja.hidden) {
+    // El texto va en un solo <span>: la fila es flex y separaría cada trozo
+    const frase = document.createElement("span");
+    pintarTexto(frase, ["Cómo se sintió ", dePareja(nombrePareja), ": " + nombreAnimo(animoDeLaPareja)]);
+    animoPareja.replaceChildren(crearCaraAnimo(animoDeLaPareja), frase);
+  }
 
   if (respuestaDeLaPareja) {
     respuestaPareja.textContent = respuestaDeLaPareja.texto;
@@ -259,6 +334,15 @@ formRespuesta.addEventListener("submit", async (e) => {
   const texto = campoRespuesta.value.trim();
   if (!texto) return;
 
+  // Antes de responder por primera vez hay que elegir cómo te sentiste.
+  // (Al editar una respuesta de antes de los ánimos, es opcional.)
+  const animo = animoElegido();
+  if (!miRespuesta && !animo) {
+    ponerEstado("Elige cómo te sentiste antes de guardar.", "error");
+    radiosAnimo[0].focus();
+    return;
+  }
+
   btnGuardar.disabled = true;
   onda(btnGuardar);
   ponerEstado("Guardando...");
@@ -271,7 +355,7 @@ formRespuesta.addEventListener("submit", async (e) => {
     let data;
     ({ data, error } = await db
       .from("respuestas")
-      .update({ texto })
+      .update({ texto, animo })
       .eq("id", miRespuesta.id)
       .select("id"));
 
@@ -283,7 +367,7 @@ formRespuesta.addEventListener("submit", async (e) => {
     }
   } else {
     // Primera vez: creamos la respuesta (usuario_id se llena solo en la base de datos)
-    ({ error } = await db.from("respuestas").insert({ pregunta_numero: numero, texto }));
+    ({ error } = await db.from("respuestas").insert({ pregunta_numero: numero, texto, animo }));
   }
 
   btnGuardar.disabled = false;
@@ -295,6 +379,7 @@ formRespuesta.addEventListener("submit", async (e) => {
   }
 
   borrarLocal(claveBorrador(usuario.id, numero));
+  borrarLocal(claveBorradorAnimo());
 
   // Cada vez que guardas, llueve y se riega el jardín (unos 6 s, no se puede saltar).
   // Mientras tanto, por debajo, se recarga la pregunta.
@@ -311,11 +396,6 @@ formRespuesta.addEventListener("submit", async (e) => {
       : "¡Guardado!",
     "ok"
   );
-});
-
-btnSalir.addEventListener("click", async () => {
-  await db.auth.signOut();
-  window.location.href = "index.html";
 });
 
 iniciar();

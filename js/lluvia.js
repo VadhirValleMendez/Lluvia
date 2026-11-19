@@ -70,6 +70,23 @@ async function traerTodo(tabla, columnas, orden, ajustar = (q) => q) {
   return todas;
 }
 
+// Lo común a Hoy, Jardín e Historial: prepara el botón "Cerrar sesión" y
+// comprueba que haya sesión. Si no la hay, manda al login y devuelve null.
+// (Es solo comodidad: la seguridad real son las reglas RLS de la base de datos.)
+async function exigirSesion() {
+  document.getElementById("btn-salir").addEventListener("click", async () => {
+    await db.auth.signOut();
+    window.location.href = "index.html";
+  });
+
+  const { data } = await db.auth.getSession();
+  if (!data.session) {
+    window.location.href = "index.html";
+    return null;
+  }
+  return data.session;
+}
+
 // Fecha desde la que cuentan su relación (AAAA-MM-DD)
 const FECHA_RELACION = "2026-09-26";
 

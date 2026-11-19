@@ -35,8 +35,10 @@ self.addEventListener("notificationclick", (e) => {
     self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((ventanas) => {
       for (const ventana of ventanas) {
         if (ventana.url.startsWith(self.registration.scope) && "focus" in ventana) {
-          ventana.navigate(destino);
-          return ventana.focus();
+          // Primero se enfoca (el navegador solo lo deja justo al tocar el aviso)
+          // y luego se lleva a la página del aviso. navigate() falla en ventanas
+          // que este service worker no controla: entonces se queda donde estaba.
+          return ventana.focus().then(() => ventana.navigate(destino)).catch(() => {});
         }
       }
       return self.clients.openWindow(destino);

@@ -99,6 +99,18 @@
   --mio-cielo: var(--sol); /* lo propio cuando está sobre el cielo */
   --pareja: var(--rosa-500);
   --pareja-suave: var(--rosa-300);
+
+  /* El ánimo del día (js/animos.js): gotas pastel con carita */
+  --animo-feliz: #FFE39A;
+  --animo-enamorado: #F9C6D8;
+  --animo-tranquilo: #C2E9D0;
+  --animo-triste: #C3DFF7;
+  --animo-enojado: #F9C3AE;
+  --animo-trazo: #3A3F5C;        /* ojos y boca: ≥ 7:1 sobre cualquiera de los pastel */
+  --animo-borde: rgb(19 41 63 / 0.14);
+  --animo-mejilla: rgb(240 122 168 / 0.45);
+  --animo-corazon: #E5487A;
+  --animo-lagrima: var(--cielo-400);
   --pareja-fondo: var(--rosa-50);
   --error-fondo: var(--rosa-50);
 
@@ -517,6 +529,140 @@ main {
 @keyframes esperar {
   0%, 100% { translate: 0 0; opacity: 1; }
   50% { translate: 0 3px; opacity: 0.5; }
+}
+
+/* ---------- El ánimo del día (js/animos.js) ---------- */
+
+.animo { display: block; overflow: visible; }
+.animo .animo__gota { fill: var(--animo); stroke: var(--animo-borde); stroke-width: 1.2; }
+.animo .trazo {
+  fill: none;
+  stroke: var(--animo-trazo);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.animo .punto { fill: var(--animo-trazo); }
+.animo .mejilla { fill: var(--animo-mejilla); }
+.animo .corazon { fill: var(--animo-corazon); }
+.animo .lagrima { fill: var(--animo-lagrima); }
+
+.animo--feliz { --animo: var(--animo-feliz); }
+.animo--enamorado { --animo: var(--animo-enamorado); }
+.animo--tranquilo { --animo: var(--animo-tranquilo); }
+.animo--triste { --animo: var(--animo-triste); }
+.animo--enojado { --animo: var(--animo-enojado); }
+
+/* Hoy: la pregunta y las cinco gotas, en una fila (o dos, si no caben) */
+.animos {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 12px;
+  margin-bottom: 6px;
+}
+
+.animos__pregunta {
+  font-size: var(--t-pequena);
+  font-weight: 700;
+  color: var(--texto-suave);
+}
+
+.animos__caras {
+  display: flex;
+  gap: 4px;
+}
+
+/* El nombre del ánimo elegido solo en pantallas anchas; en el móvil, la
+   pregunta y las gotas caben así en una sola fila */
+.animos__nombre { display: none; }
+
+@media (min-width: 600px) {
+  .animos__nombre { display: inline; }
+}
+
+/* Con las gotas encima, la caja de texto conserva al menos dos renglones */
+.animos + textarea.renglones {
+  min-height: 64px;
+}
+
+.animo-opcion {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 4px 3px;
+  cursor: pointer;
+}
+
+/* El radio está oculto (solo-lectores); se ve la gota */
+.animo-opcion input {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.animo-opcion svg {
+  width: 34px;
+  height: 37px;
+  opacity: 0.65;
+  transition: opacity 0.4s ease, scale 0.4s ease;
+}
+
+.animo-opcion:hover svg { opacity: 0.85; }
+
+/* La elegida: más grande, con todo su color y el borde en azul (lo propio) */
+.animo-opcion input:checked + svg {
+  opacity: 1;
+  scale: 1.15;
+}
+
+.animo-opcion input:checked + svg .animo__gota {
+  stroke: var(--mio);
+  stroke-width: 2.2;
+}
+
+.animo-opcion input:focus-visible + svg {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+
+.animo-opcion input:disabled + svg { cursor: default; }
+
+/* Hoy: el ánimo de la pareja, sobre su respuesta */
+.animo-pareja {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: var(--t-pequena);
+  font-weight: 700;
+  color: var(--texto-suave);
+}
+
+.animo-pareja svg {
+  width: 28px;
+  height: 31px;
+}
+
+/* Historial: la gota junto al nombre de cada respuesta */
+.respuesta__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.respuesta__cabecera strong { margin-bottom: 0; }
+
+.respuesta__cabecera svg {
+  flex: none;
+  width: 26px;
+  height: 29px;
 }
 
 /* El panel ocupa el espacio que queda; si el texto es largo, se desplaza dentro */
@@ -1025,6 +1171,21 @@ input:focus {
   to { rotate: calc(var(--giro, 0deg) + 2deg); }
 }
 
+/* El brote (solo respondí yo) mide la mitad de una flor: es el mismo dibujo,
+   en una caja de la mitad. */
+.planta--brote {
+  width: calc(22px * var(--escala, 1));
+  height: calc(66px * var(--escala, 1));
+}
+
+.flor.flor--brote .tallo { stroke-width: 5.2; } /* el doble: en la caja de la mitad, igual de grueso que el de una flor */
+
+/* El brotecito (nadie respondió a tiempo): dos hojitas a ras de suelo.
+   Su dibujo es solo la franja de abajo (viewBox 0 80 40 40), en una caja baja. */
+.planta--brotecito {
+  height: calc(44px * var(--escala, 1));
+}
+
 /* La flor nueva brota desde el suelo */
 .planta--nueva {
   animation: brotar 1.4s cubic-bezier(0.3, 1.3, 0.5, 1) both;
@@ -1113,12 +1274,23 @@ a.planta:focus-visible svg {
 .titulo-cielo {
   flex: 1;
   display: grid;
-  place-items: center;
+  place-content: center;
   text-align: center;
-  font-size: clamp(44px, 12vw, 72px);
   color: var(--texto-cielo);
   /* sombra amplia: se lee aunque pase una nube blanca por detrás */
   text-shadow: var(--sombra-texto), 0 2px 18px rgb(10 40 80 / 0.45);
+}
+
+.titulo-cielo h1 {
+  font-size: clamp(44px, 12vw, 72px);
+}
+
+/* "29 flores, 1 brote y 3 brotecitos": blanco sobre el cielo, por eso grande y en negrita */
+.titulo-cielo__cuenta {
+  margin-top: 2px;
+  font-size: var(--t-media);
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .pagina--jardin {
@@ -1131,6 +1303,36 @@ a.planta:focus-visible svg {
 .pagina--historial {
   --ancho: 760px;
   --alto-prado: clamp(150px, 22svh, 220px);
+}
+
+/* El buscador: una nube alargada con una gota a la izquierda */
+.buscador {
+  position: relative;
+  flex: none;
+  margin-bottom: 10px;
+}
+
+.buscador input {
+  margin: 0;
+  padding-left: 44px;
+  border-radius: 999px;
+  border-color: var(--nube);
+  box-shadow: var(--sombra-baja);
+}
+
+.buscador input:focus {
+  border-color: var(--foco);
+}
+
+.buscador__gota {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  translate: 0 -50%;
+  fill: var(--gota-nube);
+  pointer-events: none;
 }
 
 /* La página no tiene scroll; la lista de días sí. Los bordes se difuminan
@@ -1168,6 +1370,15 @@ a.planta:focus-visible svg {
 
   .dia:nth-child(odd) { margin-right: 44px; }
   .dia:nth-child(even) { margin-left: 44px; }
+}
+
+/* Al buscar se esconden días: la alternancia sigue contando solo los visibles */
+.dia:nth-child(odd of .dia:not([hidden])) { margin-left: 0; margin-right: 18px; }
+.dia:nth-child(even of .dia:not([hidden])) { margin-left: 18px; margin-right: 0; }
+
+@media (min-width: 600px) {
+  .dia:nth-child(odd of .dia:not([hidden])) { margin-right: 44px; }
+  .dia:nth-child(even of .dia:not([hidden])) { margin-left: 44px; }
 }
 
 .dia .numero-pregunta {
@@ -1670,6 +1881,16 @@ html.despejando .sol--dias {
   .pregunta { margin-bottom: 10px; }
 }
 
+/* Pantallas no muy altas: las gotas del ánimo se compactan y el prado de Hoy
+   cede un poco de alto, para que la caja de texto no se quede sin sitio */
+@media (max-height: 760px) {
+  .pagina--hoy { --alto-prado: clamp(140px, 22svh, 340px); }
+  .animo-opcion { padding: 2px; }
+  .animo-opcion svg { width: 28px; height: 31px; }
+  .animos { margin-bottom: 2px; }
+  .pestanas { margin-bottom: 4px; }
+}
+
 /* Teléfonos pequeños (iPhone SE): se quita la fecha y todo se compacta */
 @media (max-height: 600px) {
   :root { --alto-prado: clamp(140px, 25svh, 360px); --alto-colinas: 48px; }
@@ -1678,6 +1899,8 @@ html.despejando .sol--dias {
   .sol--dias { --tam: clamp(96px, min(34vw, 18svh), 190px); margin-top: 4px; }
   .pregunta { font-size: clamp(20px, min(6vw, 3.8svh), var(--t-titulo)); }
   .panel { min-height: 32px; }
+  .animos + textarea.renglones { min-height: 32px; } /* un renglón: no hay sitio para más */
+  .pagina--hoy { --alto-prado: 118px; } /* para que quepan las gotas del ánimo */
   .acciones { margin-top: 8px; }
 }
 
